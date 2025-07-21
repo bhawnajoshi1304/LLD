@@ -1,0 +1,154 @@
+@startuml
+interface TicTacToe.Game.BoardGame {
+~ void play()
+~ void switchPlayer()
+~ void announceResult()
+}
+
+class TicTacToe.Game.GameContext {
+- GameState currentState
++ <<Create>> GameContext(Player)
++ void setCurrentState(GameState)
++ boolean isGameOver()
++ GameState getCurrentState()
+}
+
+
+class TicTacToe.Player.Player {
+- Character symbol
+- PlayerStrategy playerStrategy
+~ <<Create>> Player(Character,PlayerStrategy)
++ Character getSymbol()
++ PlayerStrategy getPlayerStrategy()
+}
+
+
+class TicTacToe.Demo.TicTacDemoApplication {
+- {static} Scanner scanner
+- {static} boolean getChoice(String)
+- {static} char getSymbol(String)
++ {static} void main(String[])
+}
+
+
+abstract class TicTacToe.Game.GameState {
+- Player player
++ <<Create>> GameState(Player)
++ <<Create>> GameState()
++ Player getPlayer()
++ {abstract}boolean isGameOver()
+}
+
+
+interface TicTacToe.Game.GameEventListener {
+~ void onMoveMade(Position,Character)
+~ void onGameStateChanged(GameState)
+}
+
+class TicTacToe.Game.Board {
+- {static} Character EMPTY
+- int size
+- Character[][] grid
+- List<GameEventListener> listeners
++ <<Create>> Board(int)
++ void addListener(GameEventListener)
++ void notifyMoveMade(Position,Character)
++ void notifyGameStateChanged(GameState)
++ int getSize()
++ boolean isValidMove(Position)
++ void makeMove(Position,Character)
++ void checkGameState(GameContext)
+- boolean isWinningLine(Character[])
++ void printBoard()
+}
+
+
+class TicTacToe.Game.DrawState {
++ boolean isGameOver()
+}
+
+class TicTacToe.Game.TicTacToeGame {
+- Board board
+- int numberOfPlayers
+- List<Player> players
+- int currentPlayerIndex
+- GameContext gameContext
++ <<Create>> TicTacToeGame(int,List<PlayerStrategy>,List<Character>,int)
++ void play()
++ void switchPlayer()
++ void announceResult()
+}
+
+
+class TicTacToe.Game.InProgressState {
++ <<Create>> InProgressState(Player)
++ boolean isGameOver()
+}
+
+interface TicTacToe.Player.PlayerStrategy {
+~ Position makeMove(Board)
+}
+
+class TicTacToe.Player.HumanPlayerStrategy {
+- String playerName
+- Scanner scanner
++ <<Create>> HumanPlayerStrategy(String)
++ Position makeMove(Board)
+}
+
+
+class TicTacToe.Game.FileLoggerListener {
+- String logFilePath
++ <<Create>> FileLoggerListener(String)
++ void onMoveMade(Position,Character)
++ void onGameStateChanged(GameState)
+- void log(String)
+}
+
+
+class TicTacToe.Game.Position {
++ int row
++ int col
++ <<Create>> Position(int,int)
+}
+
+
+class TicTacToe.Game.WonState {
++ <<Create>> WonState(Player)
++ boolean isGameOver()
+}
+
+class TicTacToe.Player.PlayerFactory {
++ {static} Player createPlayer(Character,PlayerStrategy)
+}
+
+' ========= INHERITANCE =========
+TicTacToe.Game.GameState <|-- TicTacToe.Game.DrawState
+TicTacToe.Game.GameState <|-- TicTacToe.Game.InProgressState
+TicTacToe.Game.GameState <|-- TicTacToe.Game.WonState
+TicTacToe.Game.BoardGame <|.. TicTacToe.Game.TicTacToeGame
+TicTacToe.Player.PlayerStrategy <|.. TicTacToe.Player.HumanPlayerStrategy
+TicTacToe.Game.GameEventListener <|.. TicTacToe.Game.FileLoggerListener
+
+' ========= COMPOSITION =========
+TicTacToe.Game.TicTacToeGame *-- TicTacToe.Game.Board
+TicTacToe.Game.TicTacToeGame *-- TicTacToe.Game.GameContext
+TicTacToe.Game.TicTacToeGame *-- TicTacToe.Player.Player
+
+' ========= ASSOCIATION =========
+TicTacToe.Game.GameContext --> TicTacToe.Game.GameState
+TicTacToe.Game.GameContext --> TicTacToe.Player.Player
+TicTacToe.Game.GameState --> TicTacToe.Player.Player
+TicTacToe.Player.Player --> TicTacToe.Player.PlayerStrategy
+TicTacToe.Game.Board --> TicTacToe.Game.GameEventListener
+TicTacToe.Game.Board --> TicTacToe.Game.Position
+TicTacToe.Game.Board --> TicTacToe.Game.GameContext
+'TicTacToe.Game.Board --> TicTacToe.Player.Player
+'TicTacToe.Game.FileLoggerListener --> TicTacToe.Game.Position
+'TicTacToe.Game.FileLoggerListener --> TicTacToe.Game.GameState
+
+' ========= DEPENDENCY =========
+TicTacToe.Player.PlayerFactory ..> TicTacToe.Player.Player
+TicTacToe.Player.PlayerFactory ..> TicTacToe.Player.PlayerStrategy
+
+@enduml
