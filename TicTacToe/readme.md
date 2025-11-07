@@ -1,3 +1,3 @@
 ### TicTacToe
 
-<!--![Diagram Image Link](./diagrams/TicTacToe.puml)-->
+<!--![Diagram Image Link](./UMLDiagram.puml)-->
