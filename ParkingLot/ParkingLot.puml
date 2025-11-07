@@ -1,0 +1,135 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+' =======================================================
+' ENUMS PACKAGE
+' =======================================================
+package "enums" {
+    enum ParkingSpotType {
+        SMALL
+        BIG
+        LARGE
+    }
+
+    enum VehicleType {
+        MOTORBIKE
+        CAR
+        TRUCK
+    }
+}
+
+' =======================================================
+' STRATEGY PACKAGE
+' =======================================================
+package "strategy" {
+    interface AllocationStrategy
+    interface FeeStrategy
+    interface PaymentStrategy
+
+    class FlexibleAllocationStrategy
+    class BasicFeeStrategy
+    class CardPayment
+    class CashPayment
+    class UPIPayment
+
+    AllocationStrategy <|.. FlexibleAllocationStrategy
+    FeeStrategy <|.. BasicFeeStrategy
+    PaymentStrategy <|.. CardPayment
+    PaymentStrategy <|.. CashPayment
+    PaymentStrategy <|.. UPIPayment
+}
+
+' =======================================================
+' OBSERVER PACKAGE
+' =======================================================
+package "observer" {
+    interface EntryObserver
+    interface ExitObserver
+
+    class ParkingLotManager
+    class DisplaBoard
+    class LoggingSystem
+    class UserPaymentSystem
+
+    EntryObserver <|.. DisplaBoard
+    EntryObserver <|.. LoggingSystem
+    ExitObserver <|.. DisplaBoard
+    ExitObserver <|.. LoggingSystem
+    ExitObserver <|.. UserPaymentSystem
+
+    ParkingLotManager o-- EntryObserver : manages >
+    ParkingLotManager o-- ExitObserver : manages >
+}
+
+' =======================================================
+' MODEL.FACTORY PACKAGE
+' =======================================================
+package "model.factory" {
+    class ParkingSpot
+    class ParkingSpotFactory
+    class Vehicle
+    class VehicleFactory
+
+    ParkingSpotFactory --> ParkingSpot : «creates»
+    VehicleFactory --> Vehicle : «creates»
+}
+
+' =======================================================
+' MODEL PACKAGE
+' =======================================================
+package "model" {
+    class ParkingFloor
+    class ParkingSession
+    class ParkingLot
+    class User
+}
+
+' =======================================================
+' APPLICATION
+' =======================================================
+class ParkingLotApplication {
+    + static void main(String[])
+}
+
+' =======================================================
+' ========= CROSS-PACKAGE RELATIONSHIPS =================
+' =======================================================
+
+' --- MODEL <-> MODEL.FACTORY ---
+model.ParkingFloor *-- "many" model.factory.ParkingSpot : composition >
+model.ParkingLot *-- model.ParkingFloor : composition >
+model.User *-- model.factory.Vehicle : composition >
+model.ParkingSession --> model.factory.ParkingSpot : association >
+model.ParkingSession --> model.User : association >
+
+' --- MODEL <-> STRATEGY ---
+model.ParkingLot o-- strategy.AllocationStrategy : aggregation >
+model.ParkingLot ..> strategy.FeeStrategy : dependency >
+model.User --> strategy.PaymentStrategy : uses >
+observer.UserPaymentSystem --> strategy.FeeStrategy : uses >
+
+' --- MODEL <-> ENUMS ---
+model.factory.Vehicle --> enums.VehicleType
+model.factory.ParkingSpot --> enums.ParkingSpotType
+strategy.AllocationStrategy --> enums.VehicleType
+strategy.FeeStrategy --> enums.ParkingSpotType
+
+' --- MODEL <-> OBSERVER ---
+model.ParkingLot o-- observer.ParkingLotManager : aggregation >
+observer.ParkingLotManager o-- observer.EntryObserver
+observer.ParkingLotManager o-- observer.ExitObserver
+observer.DisplaBoard --> model.ParkingSession
+observer.LoggingSystem --> model.ParkingSession
+observer.UserPaymentSystem --> model.ParkingSession
+
+' --- APPLICATION RELATIONSHIPS ---
+ParkingLotApplication ..> model.ParkingLot : creates >
+ParkingLotApplication ..> strategy.FeeStrategy
+ParkingLotApplication ..> strategy.AllocationStrategy
+ParkingLotApplication ..> strategy.PaymentStrategy
+ParkingLotApplication ..> enums.VehicleType
+ParkingLotApplication ..> model.User
+
+@enduml
