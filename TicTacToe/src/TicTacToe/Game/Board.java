@@ -1,37 +1,18 @@
 package TicTacToe.Game;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Board{
     private static final Character EMPTY = ' ';
     private final int size;
     private final Character[][] grid;
-    private final List<GameEventListener> listeners;
     public Board(int size) {
         this.size = size;
         grid = new Character[size][size];
-        this.listeners = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 grid[i][j] = EMPTY;
             }
-        }
-    }
-    public void addListener(GameEventListener listener) {
-        listeners.add(listener);
-    }
-    // Notifies users whenever a move has been made
-    public void notifyMoveMade(Position position, Character symbol) {
-        for (GameEventListener listener : listeners) {
-            listener.onMoveMade(position, symbol);
-        }
-    }
-    // Notifies user on change of game state
-    public void notifyGameStateChanged(GameState state) {
-        for (GameEventListener listener : listeners) {
-            listener.onGameStateChanged(state);
         }
     }
     public int getSize(){
@@ -43,9 +24,8 @@ public class Board{
     }
     public void makeMove(Position pos, Character symbol) {
         grid[pos.row][pos.col] = symbol;
-        notifyMoveMade(pos, symbol);
     }
-    public void checkGameState(GameContext context) {
+    public boolean hasGameStateChanged(GameContext context) {
         boolean hasEmptyCell = false;
 
         // Check rows and track empty cells
@@ -53,8 +33,7 @@ public class Board{
             Character[] row = grid[i];
             if (!Objects.equals(row[0], EMPTY) && isWinningLine(row)) {
                 context.setCurrentState(new WonState(context.getCurrentState().getPlayer()));
-                notifyGameStateChanged(context.getCurrentState());
-                return;
+                return true;
             }else{
                 System.out.println(i+" row not");
             }
@@ -83,8 +62,7 @@ public class Board{
 
             if (win) {
                 context.setCurrentState(new WonState(context.getCurrentState().getPlayer()));
-                notifyGameStateChanged(context.getCurrentState());
-                return;
+                return true;
             }
         }
 
@@ -99,16 +77,14 @@ public class Board{
 
         if (!Objects.equals(diag1[0], EMPTY) && isWinningLine(diag1)) {
             context.setCurrentState(new WonState(context.getCurrentState().getPlayer()));
-            notifyGameStateChanged(context.getCurrentState());
-            return;
+            return true;
         }else{
             System.out.println("diag1 not");
         }
 
         if (!Objects.equals(diag2[0], EMPTY) && isWinningLine(diag2)) {
             context.setCurrentState(new WonState(context.getCurrentState().getPlayer()));
-            notifyGameStateChanged(context.getCurrentState());
-            return;
+            return true;
         }else{
             System.out.println("diag2 not");
         }
@@ -116,8 +92,9 @@ public class Board{
         // No win, check for draw
         if (!hasEmptyCell) {
             context.setCurrentState(new DrawState());
-            notifyGameStateChanged(context.getCurrentState());
+            return true;
         }
+        return false;
     }
 
 

@@ -15,20 +15,37 @@ public class TicTacToeGame implements BoardGame{
     private final List<Player> players;
     private int currentPlayerIndex;
     private final GameContext gameContext;
+    private final List<GameEventListener> listeners;
     public TicTacToeGame(int numberOfPlayers, List<PlayerStrategy> strategies, List<Character> symbols, int size){
         String sessionId = UUID.randomUUID().toString();
         String logFile = "logs/game_" + sessionId + ".log";
         this.numberOfPlayers = numberOfPlayers;
         board = new Board(size);
-        board.addListener(new FileLoggerListener(logFile));
+        addListener(new FileLoggerListener(logFile));
         players = new ArrayList<>();
         for(int i=0;i<numberOfPlayers;i+=1){
             players.add(PlayerFactory.createPlayer(symbols.get(i),strategies.get(i)));
         }
         currentPlayerIndex = 0;
         gameContext = new GameContext(players.get(currentPlayerIndex));
+        this.listeners = new ArrayList<>();
     }
 
+    public void addListener(GameEventListener listener) {
+        listeners.add(listener);
+    }
+    // Notifies users whenever a move has been made
+    public void notifyMoveMade(Position position, Character symbol) {
+        for (GameEventListener listener : listeners) {
+            listener.onMoveMade(position, symbol);
+        }
+    }
+    // Notifies user on change of game state
+    public void notifyGameStateChanged(GameState state) {
+        for (GameEventListener listener : listeners) {
+            listener.onGameStateChanged(state);
+        }
+    }
     @Override
     public void play() {
         do {
@@ -37,8 +54,11 @@ public class TicTacToeGame implements BoardGame{
             // current player makes the move
             Position move = players.get(currentPlayerIndex).getPlayerStrategy().makeMove(board);
             board.makeMove(move, players.get(currentPlayerIndex).getSymbol());
+            notifyMoveMade(move, players.get(currentPlayerIndex).getSymbol());
             // checks game state for win/draw
-            board.checkGameState(gameContext);
+            if(board.hasGameStateChanged(gameContext))
+                notifyGameStateChanged(gameContext.getCurrentState());
+
             System.out.println(gameContext.getCurrentState());
             if(!gameContext.isGameOver()) {
                 switchPlayer();
@@ -51,7 +71,7 @@ public class TicTacToeGame implements BoardGame{
     public void switchPlayer() {
         currentPlayerIndex = (currentPlayerIndex+1)%numberOfPlayers;
         gameContext.setCurrentState(new InProgressState(players.get(currentPlayerIndex)));
-        board.notifyGameStateChanged(gameContext.getCurrentState());
+        notifyGameStateChanged(gameContext.getCurrentState());
     }
 
     @Override

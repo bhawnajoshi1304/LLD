@@ -49,15 +49,11 @@ class TicTacToe.Game.Board {
 - {static} Character EMPTY
 - int size
 - Character[][] grid
-- List<GameEventListener> listeners
 + <<Create>> Board(int)
-+ void addListener(GameEventListener)
-+ void notifyMoveMade(Position,Character)
-+ void notifyGameStateChanged(GameState)
 + int getSize()
 + boolean isValidMove(Position)
 + void makeMove(Position,Character)
-+ void checkGameState(GameContext)
++ boolean hasGameStateChanged(GameContext)
 - boolean isWinningLine(Character[])
 + void printBoard()
 }
@@ -73,6 +69,10 @@ class TicTacToe.Game.TicTacToeGame {
 - List<Player> players
 - int currentPlayerIndex
 - GameContext gameContext
+- List<GameEventListener> listeners
++ void addListener(GameEventListener)
++ void notifyMoveMade(Position,Character)
++ void notifyGameStateChanged(GameState)
 + <<Create>> TicTacToeGame(int,List<PlayerStrategy>,List<Character>,int)
 + void play()
 + void switchPlayer()
@@ -140,7 +140,7 @@ TicTacToe.Game.GameContext --> TicTacToe.Game.GameState
 TicTacToe.Game.GameContext --> TicTacToe.Player.Player
 TicTacToe.Game.GameState --> TicTacToe.Player.Player
 TicTacToe.Player.Player --> TicTacToe.Player.PlayerStrategy
-TicTacToe.Game.Board --> TicTacToe.Game.GameEventListener
+TicTacToe.Game.TicTacToeGame --> TicTacToe.Game.GameEventListener
 TicTacToe.Game.Board --> TicTacToe.Game.Position
 TicTacToe.Game.Board --> TicTacToe.Game.GameContext
 'TicTacToe.Game.Board --> TicTacToe.Player.Player
