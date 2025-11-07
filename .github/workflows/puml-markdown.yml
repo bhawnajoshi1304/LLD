@@ -1,0 +1,40 @@
+name: Render PlantUML in Markdown
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '**/*.md'
+      - '**/*.puml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**/*.md'
+      - '**/*.puml'
+
+# Needed so the workflow can commit/push rendered files back
+permissions:
+  contents: write
+
+jobs:
+  embed-puml-markdown:
+    # Prevent infinite loops: don’t run when the bot’s own commit triggers a push
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Embed PlantUML inside Markdown
+        uses: alessandro-marcantoni/puml-markdown@v0.1.1
+
+      - name: Commit and push rendered Markdown
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Auto-render UML diagrams [skip ci]" || echo "No changes to commit"
+          git push
