@@ -1,19 +1,18 @@
 package main.java.com.parkingLot.model.factory;
 
 import main.java.com.parkingLot.enums.VehicleType;
-import main.java.com.parkingLot.model.User;
 
 public class VehicleFactory {
-    public static Vehicle createVehicle(VehicleType type, String licenceNumber, User user) {
+    public static Vehicle create(VehicleType type, String licenceNumber) {
         switch(type){
             case MOTORBIKE -> {
-                return new Vehicle(licenceNumber,VehicleType.MOTORBIKE,user);
+                return new Vehicle(licenceNumber,VehicleType.MOTORBIKE);
             }
             case CAR -> {
-                return new Vehicle(licenceNumber, VehicleType.CAR,user);
+                return new Vehicle(licenceNumber, VehicleType.CAR);
             }
             case TRUCK -> {
-                return  new Vehicle(licenceNumber, VehicleType.TRUCK,user);
+                return  new Vehicle(licenceNumber, VehicleType.TRUCK);
             }
             default -> throw new IllegalArgumentException("No such vehicle type exist");
         }

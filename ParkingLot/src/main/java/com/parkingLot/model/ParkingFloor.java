@@ -19,7 +19,7 @@ public class ParkingFloor {
             List<ParkingSpot> spots = new ArrayList<>();
             for (int i = 1; i <= count; i++) {
                 String spotId = floor + "_" + type + "_" + i; // Example: CAR_1, CAR_2, etc.
-                spots.add(ParkingSpotFactory.createSpot(spotId, type));
+                spots.add(ParkingSpotFactory.create(spotId, type));
             }
 
             floorMap.put(type, spots);

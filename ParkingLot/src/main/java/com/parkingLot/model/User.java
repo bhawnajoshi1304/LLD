@@ -12,7 +12,7 @@ public class User {
         paymentStrategy.processPayment(amount);
     }
     public User(VehicleType type, String vehicleNumber, PaymentStrategy paymentStrategy) {
-        this.vehicle = VehicleFactory.createVehicle(type,vehicleNumber,this);
+        this.vehicle = VehicleFactory.create(type,vehicleNumber);
         this.paymentStrategy = paymentStrategy;
     }
     public Vehicle getVehicle(){

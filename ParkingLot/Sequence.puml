@@ -1,0 +1,49 @@
+@startuml
+
+actor User
+
+== Parking Flow ==
+
+User -> ParkingLot : park(user)
+
+ParkingLot -> AllocationStrategy : getPreferredSpotOrder(vehicleType)
+
+loop preferred spot types
+    ParkingLot -> ParkingFloor : getAvailableSpotOfType(type)
+    ParkingFloor -> ParkingSpot : isOccupied()
+end
+
+ParkingLot -> ParkingSpot : canParkVehicle(vehicle, strategy)
+
+ParkingLot -> ParkingSpot : parkVehicle(vehicle, strategy)
+
+ParkingLot -> ParkingSession : create(user, spot)
+
+ParkingLot -> ParkingLotManager : notifyEntry(session)
+
+ParkingLotManager -> DisplayBoard : onVehicleEntry(session)
+ParkingLotManager -> LoggingSystem : onVehicleEntry(session)
+
+== Exit Flow ==
+
+User -> ParkingLot : exit(user)
+
+ParkingLot -> ParkingSession : getSession(vehicleNumber)
+ParkingLot -> ParkingSession : endSession()
+
+ParkingLot -> ParkingSpot : exitVehicle()
+
+ParkingLot -> ParkingLotManager : notifyExit(session)
+
+ParkingLotManager -> UserPaymentSystem : onVehicleExit(session)
+
+UserPaymentSystem -> ParkingSession : calculateDurationMinutes()
+UserPaymentSystem -> ParkingSpot : getSpotType()
+UserPaymentSystem -> FeeStrategy : calculateFee(type, duration)
+
+UserPaymentSystem -> User : pay(amount)
+
+ParkingLotManager -> LoggingSystem : onVehicleExit(session)
+ParkingLotManager -> DisplayBoard : onVehicleExit(session)
+
+@enduml

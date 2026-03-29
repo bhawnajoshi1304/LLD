@@ -2,7 +2,7 @@ package main.java.com.parkingLot.observer;
 
 import main.java.com.parkingLot.model.ParkingSession;
 
-public class DisplaBoard implements ExitObserver, EntryObserver {
+public class DisplayBoard implements ParkingObserver {
     @Override
     public void onVehicleEntry(ParkingSession session) {
         System.out.println(session.getUser().getVehicle().getNumberPlate()+" parked in "+session.getSpot().getSpotId());

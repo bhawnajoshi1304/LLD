@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class LoggingSystem implements ExitObserver, EntryObserver {
+public class LoggingSystem implements ParkingObserver {
 
     private final String logFilePath;
     public LoggingSystem(String logFilePath) {

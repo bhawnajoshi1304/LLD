@@ -19,7 +19,6 @@ public class ParkingSession {
 
     public void endSession() {
         this.exitTime = LocalDateTime.now();
-        this.spot.exitVehicle();
     }
 
     public long calculateDurationMinutes() {
@@ -28,8 +27,8 @@ public class ParkingSession {
     }
     public User getUser() { return user; }
     public ParkingSpot getSpot() { return spot; }
-
-    @Override
+    
+ @Override
     public String toString() {
         return
                 "model.factory.VehicleFactory.Vehicle=" + user.getVehicle().getNumberPlate() +

@@ -1,0 +1,236 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+' =======================================================
+' ENUMS PACKAGE
+' =======================================================
+package "enums" {
+    enum ParkingSpotType {
+        SMALL
+        BIG
+        LARGE
+    }
+
+    enum VehicleType {
+        MOTORBIKE
+        CAR
+        TRUCK
+    }
+}
+
+' =======================================================
+' STRATEGY PACKAGE
+' =======================================================
+package "strategy" {
+
+    interface AllocationStrategy{
+        + supportsPark(vehicleType: VehicleType, spotType: ParkingSpotType): boolean
+        + getPreferredSpotOrder(vehicleType: VehicleType): List<ParkingSpotType>
+    }
+
+    interface FeeStrategy{
+        + calculateFee(type: ParkingSpotType, duration: long): double
+    }
+
+    interface PaymentStrategy{
+        + processPayment(amount: double): void
+    }
+
+    class FlexibleAllocationStrategy <<Strategy>> {
+        + supportsPark(vehicleType: VehicleType, spotType: ParkingSpotType): boolean
+        + getPreferredSpotOrder(vehicleType: VehicleType): List<ParkingSpotType>
+    }
+
+    class BasicFeeStrategy <<Strategy>> {
+        + calculateFee(type: ParkingSpotType, duration: long): double
+    }
+
+    class CardPayment <<Strategy>> {
+        + processPayment(amount: double): void
+    }
+
+    class CashPayment <<Strategy>> {
+        + processPayment(amount: double): void
+    }
+
+    class UPIPayment <<Strategy>> {
+        + processPayment(amount: double): void
+    }
+
+    AllocationStrategy <|.. FlexibleAllocationStrategy
+    FeeStrategy <|.. BasicFeeStrategy
+    PaymentStrategy <|.. CardPayment
+    PaymentStrategy <|.. CashPayment
+    PaymentStrategy <|.. UPIPayment
+}
+
+' =======================================================
+' OBSERVER PACKAGE
+' =======================================================
+package "observer" {
+
+    interface ParkingObserver{
+        + onVehicleEntry(session: ParkingSession): void
+        + onVehicleExit(session: ParkingSession): void
+    }
+
+    class DisplayBoard <<Observer>> {
+        + onVehicleEntry(session: ParkingSession): void
+        + onVehicleExit(session: ParkingSession): void
+    }
+
+    class LoggingSystem <<Observer>> {
+        - logFilePath: String
+        + LoggingSystem(logFilePath: String)
+        - log(message: String): void
+        + onVehicleEntry(session: ParkingSession): void
+        + onVehicleExit(session: ParkingSession): void
+    }
+
+    class UserPaymentSystem <<Observer>> {
+        - feeStrategy: FeeStrategy
+        + UserPaymentSystem(feeStrategy: FeeStrategy)
+        + onVehicleEntry(session: ParkingSession): void
+        + onVehicleExit(session: ParkingSession): void
+    }
+
+    ParkingObserver <|.. DisplayBoard
+    ParkingObserver <|.. LoggingSystem
+    ParkingObserver <|.. UserPaymentSystem
+}
+
+' =======================================================
+' MODEL.FACTORY PACKAGE
+' =======================================================
+package "model.factory" {
+
+    class ParkingSpot {
+         - spotNumber: String
+         - occupied: boolean
+         - vehicle: Vehicle
+         - spotType: ParkingSpotType
+         - occupiedAt: LocalDateTime
+         + ParkingSpot(spotNumber: String, spotType: ParkingSpotType)
+         + canParkVehicle(vehicle: Vehicle, strategy: AllocationStrategy): boolean
+         + parkVehicle(vehicle: Vehicle, strategy: AllocationStrategy): void
+         + exitVehicle(): void
+         + isOccupied(): boolean
+         + getSpotId(): String
+         + getSpotType(): ParkingSpotType
+     }
+
+    class Vehicle <<immutable>> {
+        - numberPlate: String
+        - type: VehicleType
+        ~ Vehicle(numberPlate: String, type: VehicleType)
+        + getVehicleType(): VehicleType
+        + getNumberPlate(): String
+    }
+
+    class ParkingLotManager {
+        - exitObservers: List<ParkingObserver>
+        - entryObservers: List<ParkingObserver>
+        + ParkingLotManager()
+        + registerExit(obs: ParkingObserver): void
+        + registerEntry(obs: ParkingObserver): void
+        + notifyExit(parkingSession: ParkingSession): void
+        + notifyEntry(parkingSession: ParkingSession): void
+    }
+
+    class ParkingSpotFactory <<Factory>> {
+        + create(spotId: String, type: ParkingSpotType): ParkingSpot {static}
+    }
+
+    class VehicleFactory <<Factory>> {
+        + create(type: VehicleType, licenceNumber: String): Vehicle {static}
+    }
+
+    class ParkingLotManagerFactory <<Factory>> {
+        + create(feeStrategy: FeeStrategy): ParkingLotManager {static}
+    }
+
+    ParkingSpotFactory ..> ParkingSpot
+    VehicleFactory ..> Vehicle
+    ParkingLotManagerFactory ..> ParkingLotManager
+}
+
+' =======================================================
+' MODEL PACKAGE
+' =======================================================
+package "model" {
+
+    class ParkingFloor {
+        - floorMap: Map<ParkingSpotType, List<ParkingSpot>>
+        - floorNumber: int
+        + ParkingFloor(floorConfig: Map<ParkingSpotType, Integer>, floor: int)
+        + getParkingSpotById(id: String): ParkingSpot
+        + getAvailableSpotOfType(type: ParkingSpotType): ParkingSpot
+        + printFloorDetails(): void
+        + getFloorNumber(): int
+    }
+
+    class ParkingSession {
+        - user: User
+        - spot: ParkingSpot
+        - entryTime: LocalDateTime
+        - exitTime: LocalDateTime
+        + ParkingSession(user: User, spot: ParkingSpot)
+        + endSession(): void
+        + calculateDurationMinutes(): long
+        + getUser(): User
+        + getSpot(): ParkingSpot
+        + toString(): String
+    }
+
+ class ParkingLot <<Singleton>> {
+     - floors: List<ParkingFloor>
+     - activeSessions: Map<String, ParkingSession>
+     - lock: Lock
+     - allocationStrategy: AllocationStrategy
+     - parkingLotManager: ParkingLotManager
+     - lot: ParkingLot {static}
+     - ParkingLot(allocationStrategy: AllocationStrategy,parkingLotManager: ParkingLotManager, floorCount: int, floorMap: List<Map<ParkingSpotType, Integer>>)
+     + createInstance(feeStrategy: FeeStrategy, allocationStrategy: AllocationStrategy, floorCount: int, floorMap: List<Map<ParkingSpotType, Integer>>): ParkingLot {static}
+     + getInstance(): ParkingLot {static}
+     - findAvailableSlot(vehicleType: VehicleType): ParkingSpot
+     + park(user: User): void
+     + exit(user: User): void
+ }
+
+    class User {
+        - vehicle: Vehicle
+        - paymentStrategy: PaymentStrategy
+        + User(type: VehicleType, vehicleNumber: String, paymentStrategy: PaymentStrategy)
+        + pay(amount: double): void
+        + getVehicle(): Vehicle
+    }
+}
+
+' =======================================================
+' RELATIONSHIPS
+' =======================================================
+
+model.ParkingFloor *-- model.factory.ParkingSpot
+model.ParkingFloor ..> model.factory.ParkingSpotFactory
+
+model.ParkingLot *-- model.ParkingFloor
+model.ParkingLot --> model.ParkingSession
+model.ParkingLot --> model.factory.ParkingSpot
+model.ParkingLot --> model.factory.ParkingLotManager
+model.ParkingLot o-- strategy.AllocationStrategy
+model.ParkingLot ..> strategy.FeeStrategy
+
+model.User *-- model.factory.Vehicle
+model.User --> strategy.PaymentStrategy
+
+model.ParkingSession --> model.User
+model.ParkingSession --> model.factory.ParkingSpot
+
+observer.ParkingObserver --> model.ParkingSession
+model.factory.ParkingLotManager --> observer.ParkingObserver
+
+observer.UserPaymentSystem --> strategy.FeeStrategy
+
+@enduml
