@@ -102,23 +102,65 @@ package "observer" {
 }
 
 ' =======================================================
+' STATE PACKAGE
+' =======================================================
+package "state" {
+
+    interface ParkingSpotState{
+        + canParkVehicle(spot: ParkingSpot, vehicle: Vehicle, strategy: AllocationStrategy): boolean
+        + parkVehicle(spot: ParkingSpot, vehicle: Vehicle): void
+        + exitVehicle(spot: ParkingSpot): void
+        + isOccupied(): boolean
+    }
+
+    class AvailableState <<State>> {
+        + canParkVehicle(spot: ParkingSpot, vehicle: Vehicle, strategy: AllocationStrategy): boolean
+        + parkVehicle(spot: ParkingSpot, vehicle: Vehicle): void
+        + exitVehicle(spot: ParkingSpot): void
+        + isOccupied(): boolean
+    }
+
+    class OccupiedState <<State>> {
+        + canParkVehicle(spot: ParkingSpot, vehicle: Vehicle, strategy: AllocationStrategy): boolean
+        + parkVehicle(spot: ParkingSpot, vehicle: Vehicle): void
+        + exitVehicle(spot: ParkingSpot): void
+        + isOccupied(): boolean
+    }
+
+    class OutOfServiceState <<State>> {
+        + canParkVehicle(spot: ParkingSpot, vehicle: Vehicle, strategy: AllocationStrategy): boolean
+        + parkVehicle(spot: ParkingSpot, vehicle: Vehicle): void
+        + exitVehicle(spot: ParkingSpot): void
+        + isOccupied(): boolean
+    }
+
+    ParkingSpotState <|.. AvailableState
+    ParkingSpotState <|.. OccupiedState
+    ParkingSpotState <|.. OutOfServiceState
+}
+
+' =======================================================
 ' MODEL.FACTORY PACKAGE
 ' =======================================================
 package "model.factory" {
 
     class ParkingSpot {
          - spotNumber: String
-         - occupied: boolean
          - vehicle: Vehicle
          - spotType: ParkingSpotType
          - occupiedAt: LocalDateTime
+         - state: ParkingSpotState
          + ParkingSpot(spotNumber: String, spotType: ParkingSpotType)
          + canParkVehicle(vehicle: Vehicle, strategy: AllocationStrategy): boolean
-         + parkVehicle(vehicle: Vehicle, strategy: AllocationStrategy): void
+         + parkVehicle(vehicle: Vehicle): void
          + exitVehicle(): void
          + isOccupied(): boolean
          + getSpotId(): String
          + getSpotType(): ParkingSpotType
+         + getState(): ParkingSpotState
+         + setState(state: ParkingSpotState): void
+         + setVehicle(vehicle: Vehicle): void
+         + setOccupiedAt(occupiedAt: LocalDateTime): void
      }
 
     class Vehicle <<immutable>> {
@@ -232,5 +274,8 @@ observer.ParkingObserver --> model.ParkingSession
 model.factory.ParkingLotManager --> observer.ParkingObserver
 
 observer.UserPaymentSystem --> strategy.FeeStrategy
+
+model.factory.ParkingSpot o-- state.ParkingSpotState
+state.ParkingSpotState --> model.factory.ParkingSpot
 
 @enduml
