@@ -4,11 +4,11 @@ A Low Level Design implementation of a TicTacToe game demonstrating various desi
 
 ## UML Diagram
 
-[![Class Diagram](https://tinyurl.com/placeholder-tictactoe)](https://tinyurl.com/placeholder-tictactoe)<!--![Class Diagram](./UMLDiagram.puml)-->
+[![Class Diagram](https://tinyurl.com/2yohgkv6)](https://tinyurl.com/2yohgkv6)<!--![Class Diagram](./UMLDiagram.puml)-->
 
 ## Sequence Diagram
 
-[![Sequence Diagram](https://tinyurl.com/placeholder-tictactoe-seq)](https://tinyurl.com/placeholder-tictactoe-seq)<!--![Sequence Diagram](./Sequence.puml)-->
+[![Sequence Diagram](https://tinyurl.com/2a9tm98s)](https://tinyurl.com/2a9tm98s)<!--![Sequence Diagram](./Sequence.puml)-->
 
 ## Design Patterns Used
 
