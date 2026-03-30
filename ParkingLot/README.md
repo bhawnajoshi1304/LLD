@@ -4,11 +4,11 @@ A Low Level Design implementation of a Parking Lot Management System demonstrati
 
 ## UML Diagram
 
-[![Class Diagram](https://tinyurl.com/placeholder-parkinglot)](https://tinyurl.com/placeholder-parkinglot)<!--![Class Diagram](./UMLClass.puml)-->
+[![Class Diagram](https://tinyurl.com/28jt3rn6)](https://tinyurl.com/28jt3rn6)<!--![Class Diagram](./UMLClass.puml)-->
 
 ## Sequence Diagram
 
-[![Sequence Diagram](https://tinyurl.com/placeholder-parkinglot-seq)](https://tinyurl.com/placeholder-parkinglot-seq)<!--![Sequence Diagram](./SequenceDiagram.puml)-->
+[![Sequence Diagram](https://tinyurl.com/27penct5)](https://tinyurl.com/27penct5)<!--![Sequence Diagram](./SequenceDiagram.puml)-->
 
 ## Design Patterns Used
 
