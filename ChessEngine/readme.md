@@ -63,7 +63,7 @@ A Low Level Design implementation of a Chess Game engine demonstrating various d
 
 ## UML Diagram
 
-[![Diagram Image Link](https://tinyurl.com/placeholder-chessengine)](https://tinyurl.com/placeholder-chessengine)<!--![Diagram Image Link](./UMLClass.puml)-->
+[![Diagram Image Link](https://tinyurl.com/2b5mxh5n)](https://tinyurl.com/2b5mxh5n)<!--![Diagram Image Link](./UMLClass.puml)-->
 
 ## Design Patterns Used
 
