@@ -1,0 +1,50 @@
+@startuml
+
+actor Player1
+actor Player2
+participant "TicTacDemoApplication" as App
+participant "TicTacToeGame" as Game
+participant "Board" as Board
+participant "GameContext" as Context
+
+== Game Setup ==
+Player1 -> App: Start game
+activate App
+App -> Game: new TicTacToeGame(players, strategies, symbols, size)
+activate Game
+Game -> Board: new Board(size)
+Game -> Context: new GameContext(startingPlayer)
+return
+
+== Game Loop ==
+loop Until Game Over
+    App -> Game: play()
+    activate Game
+    Game -> Board: printBoard()
+    
+    alt Current Player is Human
+        Player1 -> Game: makeMove()
+        Game -> Board: isValidMove(position)
+        Board --> Game: boolean
+        Game -> Board: makeMove(position, symbol)
+        Game -> Context: setCurrentState(state)
+    end
+    
+    Game -> Board: hasGameStateChanged(context)
+    Board --> Game: boolean
+    
+    alt Game Won
+        Game -> Context: setCurrentState(WonState)
+    else Game Draw
+        Game -> Context: setCurrentState(DrawState)
+    else Continue
+        Game -> Game: switchPlayer()
+    end
+    return
+end
+
+== Game End ==
+Game -> Game: announceResult()
+Game --> Player1: Display winner/draw
+
+@enduml
