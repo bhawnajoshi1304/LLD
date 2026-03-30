@@ -1,5 +1,7 @@
 @startuml
 
+' Auto-generated sequence diagram for ParkingLot
+
 actor User
 
 == Parking Flow ==

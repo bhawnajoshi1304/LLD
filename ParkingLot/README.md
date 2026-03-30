@@ -2,6 +2,10 @@
 
 A Low Level Design implementation of a Parking Lot Management System demonstrating various design patterns.
 
+## UML Diagram
+
+[![Diagram Image Link](https://tinyurl.com/placeholder-parkinglot)](https://tinyurl.com/placeholder-parkinglot)<!--![Diagram Image Link](./UMLClass.puml)-->
+
 ## Design Patterns Used
 
 | Pattern | Package | Description |
@@ -38,3 +42,4 @@ A Low Leve!in
 
 | **Factory** | `model.factory` | ParkingSpot, ass="com.lld.parkinglot.ParkingLotApplication"
 ```
+

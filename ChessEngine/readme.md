@@ -57,5 +57,14 @@
   - UP(-1, 0), DOWN(1, 0), LEFT(0, -1), RIGHT(0, 1),
   DIAGONAL_LEFT_UP(-1, -1), DIAGONAL_RIGHT_UP(-1, 1),
 
+# ChessEngine
+
+A Low Level Design implementation of a Chess Game engine demonstrating various design patterns.
+
+## UML Diagram
+
+[![Diagram Image Link](https://tinyurl.com/placeholder-chessengine)](https://tinyurl.com/placeholder-chessengine)<!--![Diagram Image Link](./UMLClass.puml)-->
+
+## Design Patterns Used
 
 - MoveStartegy initially needed just the startPosition, but king and pawn have special moves like castle and enpassant so we need board instance too
