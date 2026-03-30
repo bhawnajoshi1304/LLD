@@ -1,154 +1,129 @@
 @startuml
-interface TicTacToe.Game.BoardGame {
-~ void play()
-~ void switchPlayer()
-~ void announceResult()
-}
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
 
-class TicTacToe.Game.GameContext {
-- GameState currentState
-+ <<Create>> GameContext(Player)
-+ void setCurrentState(GameState)
-+ boolean isGameOver()
-+ GameState getCurrentState()
-}
+package "com.lld.tictactoe.model" {
+    class Board {
+        - {static} Character EMPTY
+        - int size
+        - Character[][] grid
+        + <<Create>> Board(int)
+        + int getSize()
+        + boolean isValidMove(Position)
+        + void makeMove(Position,Character)
+        + boolean hasGameStateChanged(GameContext)
+        - boolean isWinningLine(Character[])
+        + void printBoard()
+    }
 
+    class Position {
+        + int row
+        + int col
+        + <<Create>> Position(int,int)
+    }
 
-class TicTacToe.Player.Player {
-- Character symbol
-- PlayerStrategy playerStrategy
-~ <<Create>> Player(Character,PlayerStrategy)
-+ Character getSymbol()
-+ PlayerStrategy getPlayerStrategy()
-}
+    class Player {
+        - Character symbol
+        - PlayerStrategy playerStrategy
+        ~ <<Create>> Player(Character,PlayerStrategy)
+        + Character getSymbol()
+        + PlayerStrategy getPlayerStrategy()
+    }
 
+    abstract class GameState {
+        - Player player
+        + <<Create>> GameState(Player)
+        + <<Create>> GameState()
+        + Player getPlayer(@startuml
+skinparam packageStn skinparaerskinparam linetype ortho
+skinpataskinparam classAttribut>>
+package "com.lld.tictactoe.model+ b    class Board {
+        - {statiss        - {stati          - int size
+        - Char          - CharactGa        + <<Create>> Board(ra        + int getSize()
+      am        + boolean isVaeS        + void makeMove(Position,Charae         + boolean hasGameStateChanged(Game
+}        - boolean isWinningLine(Character[])
+    s      ontext {
+        - GameState currentStat    }
 
-class TicTacToe.Demo.TicTacDemoApplication {
-- {static} Scanner scanner
-- {static} boolean getChoice(String)
-- {static} char getSymbol(String)
-+ {static} void main(String[])
-}
+    class Position eC
+   xt(   yer)
+        + void setCurrentState(        + <<Crea      }
 
+    class Player {
+        - CeS
+    ge        - Charact          - PlayerStrategy nt        ~ <<Create>> Player(Character,os        + Character getSymbol()
+        + PlayerStraam        + PlayerStrategy getPlog    }
 
-abstract class TicTacToe.Game.GameState {
-- Player player
-+ <<Create>> GameState(Player)
-+ <<Create>> GameState()
-+ Player getPlayer()
-+ {abstract}boolean isGameOver()
-}
+    abstract class GameState {
+       
+     +        - Player player
+     r(        + <<Create>> G o        + <<Create>> GameState(       +        + Player getPlayer(@staatskinparam packageStn skinparaerskin
 
+skinpataskinparam classAttribut>>
+package "com.lld.ticgepackage "com.lldtoe.strategy" {
+    interface PlayerStrategy {
+        ~ Position makeM        - Char          - CharactGa        + <<Create        am        + boolean isVaeS        + void makeMove(Position,Charae         + booleg}        - boolean isWinningLine(Character[])
+    s      ontext {
+        - GameState currentStat    }
 
-interface TicTacToe.Game.GameEventListener {
-~ void onMoveMade(Position,Character)
-~ void onGameStateChanged(GameState)
-}
+    classld    s      ontext {
+        - GameState ctory         - GameStaic}
+    class Position eC
+   xt(   yererS   xt(   yer)
+      ck        + vo.t
+    class Player {
+        - CeS
+    ge        - Chavoi        - CeS
+   ~     ge      la        + PlayerStraam        + PlayerStrategy getPlog    }
 
-class TicTacToe.Game.Board {
-- {static} Character EMPTY
-- int size
-- Character[][] grid
-+ <<Create>> Board(int)
-+ int getSize()
-+ boolean isValidMove(Position)
-+ void makeMove(Position,Character)
-+ boolean hasGameStateChanged(GameContext)
-- boolean isWinningLine(Character[])
-+ void printBoard()
-}
+    abstract class GameState {
+       
+     +        - Player
+ 
+    abstract class GameSyers
+        - int currentPlayerInde       
+     +        - Playeon     +       r(        + <<Create>> r>
+skinpataskinparam classAttribut>>
+package "com.lld.ticgepackage "com.lldtoe.strategy" {
+    interface PlayerStrategy {
+        ~ PositioChapackage "com.lld.ticgepackage "cte    interface PlayerStrategy {
+        ~ Position mact        ~ Position makeM     )
+    s      ontext {
+        - GameState currentStat    }
 
+    classld    s      ontext {
+        - GameState ctory         - GameStaic}
+    class Position eC
+   xt(   yererS   xt(   yer)
+      ck        + vo.t
+           - GameStatle
+    classld    s      ontext {
+   tic        - GameState ctg)
+          class Position eC
+   xt(   yererS   xt(  ==   === CROSS-PACKAGE R      ck        + vo.t
+    ll    class Player {
+  ac        - CeS
+   ld    ge      od   ~     ge      la        + PlayecT
+    abstract class GameState {
+       
+     +        - Player
+ 
+    abstracticT       
+     +        - Playeoe     +.P 
+    abstract class oe.game.TicTacToeGame --> com.lld     +        - Playeon     +       r
 
-class TicTacToe.Game.DrawState {
-+ boolean isGameOver()
-}
-
-class TicTacToe.Game.TicTacToeGame {
-- Board board
-- int numberOfPlayers
-- List<Player> players
-- int currentPlayerIndex
-- GameContext gameContext
-- List<GameEventListener> listeners
-+ void addListener(GameEventListener)
-+ void notifyMoveMade(Position,Character)
-+ void notifyGameStateChanged(GameState)
-+ <<Create>> TicTacToeGame(int,List<PlayerStrategy>,List<Character>,int)
-+ void play()
-+ void switchPlayer()
-+ void announceResult()
-}
-
-
-class TicTacToe.Game.InProgressState {
-+ <<Create>> InProgressState(Player)
-+ boolean isGameOver()
-}
-
-interface TicTacToe.Player.PlayerStrategy {
-~ Position makeMove(Board)
-}
-
-class TicTacToe.Player.HumanPlayerStrategy {
-- String playerName
-- Scanner scanner
-+ <<Create>> HumanPlayerStrategy(String)
-+ Position makeMove(Board)
-}
-
-
-class TicTacToe.Game.FileLoggerListener {
-- String logFilePath
-+ <<Create>> FileLoggerListener(String)
-+ void onMoveMade(Position,Character)
-+ void onGameStateChanged(GameState)
-- void log(String)
-}
-
-
-class TicTacToe.Game.Position {
-+ int row
-+ int col
-+ <<Create>> Position(int,int)
-}
-
-
-class TicTacToe.Game.WonState {
-+ <<Create>> WonState(Player)
-+ boolean isGameOver()
-}
-
-class TicTacToe.Player.PlayerFactory {
-+ {static} Player createPlayer(Character,PlayerStrategy)
-}
-
-' ========= INHERITANCE =========
-TicTacToe.Game.GameState <|-- TicTacToe.Game.DrawState
-TicTacToe.Game.GameState <|-- TicTacToe.Game.InProgressState
-TicTacToe.Game.GameState <|-- TicTacToe.Game.WonState
-TicTacToe.Game.BoardGame <|.. TicTacToe.Game.TicTacToeGame
-TicTacToe.Player.PlayerStrategy <|.. TicTacToe.Player.HumanPlayerStrategy
-TicTacToe.Game.GameEventListener <|.. TicTacToe.Game.FileLoggerListener
-
-' ========= COMPOSITION =========
-TicTacToe.Game.TicTacToeGame *-- TicTacToe.Game.Board
-TicTacToe.Game.TicTacToeGame *-- TicTacToe.Game.GameContext
-TicTacToe.Game.TicTacToeGame *-- TicTacToe.Player.Player
-
-' ========= ASSOCIATION =========
-TicTacToe.Game.GameContext --> TicTacToe.Game.GameState
-TicTacToe.Game.GameContext --> TicTacToe.Player.Player
-TicTacToe.Game.GameState --> TicTacToe.Player.Player
-TicTacToe.Player.Player --> TicTacToe.Player.PlayerStrategy
-TicTacToe.Game.TicTacToeGame --> TicTacToe.Game.GameEventListener
-TicTacToe.Game.Board --> TicTacToe.Game.Position
-TicTacToe.Game.Board --> TicTacToe.Game.GameContext
-'TicTacToe.Game.Board --> TicTacToe.Player.Player
-'TicTacToe.Game.FileLoggerListener --> TicTacToe.Game.Position
-'TicTacToe.Game.FileLoggerListener --> TicTacToe.Game.GameState
-
-' ========= DEPENDENCY =========
-TicTacToe.Player.PlayerFactory ..> TicTacToe.Player.Player
-TicTacToe.Player.PlayerFactory ..> TicTacToe.Player.PlayerStrategy
+skinpataskinparam classAttribut>>
+package "com.lld.ticgepack.mpackage "com.lld.ticgepackage "c.m    interface PlayerStrategy {
+        ~ PositioChapm.        ~ PositioChapackage ">         ~ Position mact        ~ Position makeM     )
+    s      ontext {
+        -.t    s      ontext {
+        - GameState currentStat d         - GameStatto
+    classld    s      ontext {
+   tac        - GameState ctory     c    class Position eC
+   xt(   yererS   xt(  oe   xt(   yererS   xtry      ck        + vo.t
+    te           - GameStatm.    classld    s      .F   tic        - GameState ctg.t          class Position eC
+ ld   xt(   yererS   xt(  == gg    ll    class Player {
+  ac   .model.GameState
 
 @enduml
