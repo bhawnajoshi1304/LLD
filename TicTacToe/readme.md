@@ -1,4 +1,4 @@
 ### TicTacToe
 
-[![Diagram Image Link](https://tinyurl.com/24xhewjt)](https://tinyurl.com/24xhewjt)<!--![Diagram Image Link](./UMLDiagram.puml)-->
+[![Diagram Image Link](https://tinyurl.com/2dlw7skq)](https://tinyurl.com/2dlw7skq)<!--![Diagram Image Link](./UMLDiagram.puml)-->
 
