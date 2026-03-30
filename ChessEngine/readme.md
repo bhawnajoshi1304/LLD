@@ -4,11 +4,11 @@ A Low Level Design implementation of a Chess Game engine demonstrating various d
 
 ## UML Diagram
 
-[![Class Diagram](https://tinyurl.com/placeholder-chessengine)](https://tinyurl.com/placeholder-chessengine)<!--![Class Diagram](./UMLClass.puml)-->
+[![Class Diagram](https://tinyurl.com/289jjdtz)](https://tinyurl.com/289jjdtz)<!--![Class Diagram](./UMLClass.puml)-->
 
 ## Sequence Diagram
 
-[![Sequence Diagram](https://tinyurl.com/placeholder-chessengine-seq)](https://tinyurl.com/placeholder-chessengine-seq)<!--![Sequence Diagram](./Sequence.puml)-->
+[![Sequence Diagram](https://tinyurl.com/26rj44f8)](https://tinyurl.com/26rj44f8)<!--![Sequence Diagram](./Sequence.puml)-->
 
 ## Design Patterns Used
 
