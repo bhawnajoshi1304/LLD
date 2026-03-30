@@ -3,7 +3,6 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-' Auto-generated UML diagram for ChessEngine
 
 package "com.lld.chessengine.model" {
     class Board {
@@ -178,3 +177,4 @@ com.lld.chessengine.model.Player --> com.lld.chessengine.model.Color
 com.lld.chessengine.model.Engine --> com.lld.chessengine.state.GameState
 
 @enduml
+' Trigger workflow update

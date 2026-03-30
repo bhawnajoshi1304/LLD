@@ -1,6 +1,5 @@
 @startuml
 
-' Auto-generated sequence diagram for ParkingLot
 
 actor User
 
@@ -48,4 +47,4 @@ UserPaymentSystem -> User : pay(amount)
 ParkingLotManager -> LoggingSystem : onVehicleExit(session)
 ParkingLotManager -> DisplayBoard : onVehicleExit(session)
 
-@enduml
+@enduml' Trigger workflow update

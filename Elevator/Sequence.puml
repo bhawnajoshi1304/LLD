@@ -1,5 +1,4 @@
 @startuml
-' Auto-generated sequence diagram for Elevator
 
 actor User
 actor "Building System" as Building

@@ -1,5 +1,4 @@
 @startuml
-' Auto-generated sequence diagram for ChessEngine
 
 actor WhitePlayer
 actor BlackPlayer

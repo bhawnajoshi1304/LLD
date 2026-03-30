@@ -3,7 +3,6 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-' Auto-generated UML diagram for ParkingLot
 
 ' =======================================================
 ' ENUMS PACKAGE
@@ -280,4 +279,4 @@ observer.UserPaymentSystem --> strategy.FeeStrategy
 model.factory.ParkingSpot o-- state.ParkingSpotState
 state.ParkingSpotState --> model.factory.ParkingSpot
 
-@enduml
+@enduml' Trigger workflow update

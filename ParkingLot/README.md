@@ -4,7 +4,11 @@ A Low Level Design implementation of a Parking Lot Management System demonstrati
 
 ## UML Diagram
 
-[![Diagram Image Link](https://tinyurl.com/27xfw92z)](https://tinyurl.com/27xfw92z)<!--![Diagram Image Link](./UMLClass.puml)-->
+[![Class Diagram](https://tinyurl.com/placeholder-parkinglot)](https://tinyurl.com/placeholder-parkinglot)<!--![Class Diagram](./UMLClass.puml)-->
+
+## Sequence Diagram
+
+[![Sequence Diagram](https://tinyurl.com/placeholder-parkinglot-seq)](https://tinyurl.com/placeholder-parkinglot-seq)<!--![Sequence Diagram](./SequenceDiagram.puml)-->
 
 ## Design Patterns Used
 
@@ -15,31 +19,3 @@ A Low Level Design implementation of a Parking Lot Management System demonstrati
 | **Observer** | `observer` | Entry/exit event handling |
 | **Factory** | `model.factory` | ParkingSpot, Vehicle, ParkingLotManager creation |
 | **Singleton** | `model` | ParkingLot instance |
-
-## Package Structure
-
-```
-com.lld.parkinglot/
-├── model/          # Core entities (ParkingLot, User, ParkingSession)
-├── model.factory/  # Factories for spots, vehicles, manager
-├── state/          # Parking spot states
-├── strategy/       # Allocation, fee, payment strategies
-├── observer/       # Display, logging, payment observers
-└── enums/          # ParkingSpotType, VehicleType
-```# ParkingLot
-
-A Low Lev
-`
-A Low Leve!in
-## Design Patterns Used
-
-| Pattern | Package | Description |
-|---------|---------|-------------|
-| **Stating
-| Pattern | Package |ate|---------|---------|-------------nt| **State** | `state` | Parking spio| **Strategy** | `strategy` | Allocation, Fee calculation, Payment methods |
-| *cu| **Observer** | `observer` | Entry/exit event handling |
-| **Factory** | `
-
-| **Factory** | `model.factory` | ParkingSpot, ass="com.lld.parkinglot.ParkingLotApplication"
-```
-

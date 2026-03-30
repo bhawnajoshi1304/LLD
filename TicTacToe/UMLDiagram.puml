@@ -3,7 +3,6 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-' Auto-generated UML diagram for TicTacToe
 
 package "com.lld.tictactoe.model" {
     class Board {
@@ -157,3 +156,4 @@ com.lld.tictactoe.factory.PlayerFactory ..> com.lld.tictactoe.model.Player
 com.lld.tictactoe.factory.PlayerFactory ..> com.lld.tictactoe.strategy.PlayerStrategy
 
 @enduml
+' Trigger workflow update

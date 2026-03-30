@@ -3,7 +3,6 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-' Auto-generated UML diagram for Elevator
 
 package "com.lld.elevator.model" {
     class Building {
@@ -148,3 +147,4 @@ com.lld.elevator.service.ElevatorController o-- com.lld.elevator.strategy.Schedu
 com.lld.elevator.observer.ElevatorDisplay ..> com.lld.elevator.model.Elevator
 
 @enduml
+' Trigger workflow update
