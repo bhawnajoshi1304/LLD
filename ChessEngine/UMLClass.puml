@@ -1,0 +1,178 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+package "com.lld.chessengine.model" {
+    class Board {
+        - cells: Cell[][]
+        - pieces: Set<Piece>
+        + getCell(Position): Cell
+        + getActivePieces(Color): List<Piece>
+        + makeMove(Move): boolean
+        + isValidMove(Move): boolean
+    }
+
+    class Cell {
+        - position: Position
+        - piece: Piece
+        + isEmpty(): boolean
+        + getPiece(): Piece
+        + setPiece(Piece): void
+        + removePiece(): void
+    }
+
+    class Position {
+        - row: int
+        - col: int
+        + <<Create>> Position(int, int)
+        + getRow(): int
+        + getCol(): int
+    }
+
+    class Move {
+        - from: Position
+        - to: Position
+        - piece: Piece
+        + <<Create>> Move(Position, Position, Piece)
+    }
+
+    class Player {
+        - name: String
+        - color: Color
+        - isHuman: boolean
+        + <<Create>> Player(String, Color, boolean)
+    }
+
+    class Engine {
+        - board: Board
+        - whitePlayer: Player
+        - blackPlayer: Player
+        - currentPlayer: Player
+        - state: GameState
+        + startGame(): void
+        + makeMove(Move): boolean
+        + switchTurn(): void
+        + setState(GameState): void
+    }
+
+    enum Color {
+        WHITE
+        BLACK
+    }
+
+    enum Status {
+        PLAYING
+        STARTED
+        WON
+        LOST
+        ACTIVE
+    }
+}
+
+package "com.lld.chessengine.strategy" {
+    interface MoveStrategy {
+        + isValidMove(Board, Move): boolean
+    }
+
+    class PawnMoveStrategy {
+        + isValidMove(Board, Move): boolean
+    }
+
+    class KnightMoveStrategy {
+        + isValidMove(Board, Move): boolean
+    }
+
+    class BishopMoveStrategy {
+        + isValidMove(Board, Move): boolean
+    }
+
+    class RookMoveStrategy {
+        + isValidMove(Board, Move): boolean
+    }
+
+    class QueenMoveStrategy {
+        + isValidMove(Board, Move): boolean
+    }
+
+    class KingMoveStrategy {
+        + isValidMove(Board, Move): boolean
+    }
+
+    class Piece {
+        - type: PieceType
+        - color: Color
+        - moveStrategy: MoveStrategy
+        + canMove(Board, Move): boolean
+    }
+
+    class PieceFactory {
+        + createPiece(PieceType, Color): Piece
+    }
+
+    MoveStrategy <|.. PawnMoveStrategy
+    MoveStrategy <|.. KnightMoveStrategy
+    MoveStrategy <|.. BishopMoveStrategy
+    MoveStrategy <|.. RookMoveStrategy
+    MoveStrategy <|.. QueenMoveStrategy
+    MoveStrategy <|.. KingMoveStrategy
+}
+
+package "com.lld.chessengine.state" {
+    interface GameState {
+        + onEnter(Engine): void
+        + onExit(Engine): void
+        + canMove(Engine, Board): boolean
+        + isGameOver(): boolean
+        + getStateName(): String
+    }
+
+    class ActiveState {
+        + onEnter(Engine): void
+        + canMove(Engine, Board): boolean
+        + isGameOver(): boolean
+    }
+
+    class CheckState {
+        - kingInCheck: Color
+        + onEnter(Engine): void
+        + canMove(Engine, Board): boolean
+        + isGameOver(): boolean
+    }
+
+    class CheckmateState {
+        - winner: Color
+        + onEnter(Engine): void
+        + canMove(Engine, Board): boolean
+        + isGameOver(): boolean
+    }
+
+    class StalemateState {
+        + onEnter(Engine): void
+        + canMove(Engine, Board): boolean
+        + isGameOver(): boolean
+    }
+
+    GameState <|.. ActiveState
+    GameState <|.. CheckState
+    GameState <|.. CheckmateState
+    GameState <|.. StalemateState
+}
+
+' Relationships
+com.lld.chessengine.model.Board *-- com.lld.chessengine.model.Cell
+com.lld.chessengine.model.Cell --> com.lld.chessengine.strategy.Piece
+com.lld.chessengine.model.Cell --> com.lld.chessengine.model.Position
+com.lld.chessengine.model.Engine *-- com.lld.chessengine.model.Board
+com.lld.chessengine.model.Engine *-- com.lld.chessengine.model.Player
+com.lld.chessengine.model.Engine o-- com.lld.chessengine.state.GameState
+com.lld.chessengine.model.Move --> com.lld.chessengine.model.Position
+
+com.lld.chessengine.strategy.Piece --> com.lld.chessengine.strategy.MoveStrategy
+com.lld.chessengine.strategy.PieceFactory ..> com.lld.chessengine.strategy.Piece
+com.lld.chessengine.strategy.PieceFactory ..> com.lld.chessengine.model.Color
+
+com.lld.chessengine.model.Player --> com.lld.chessengine.model.Color
+com.lld.chessengine.model.Engine --> com.lld.chessengine.state.GameState
+
+@enduml

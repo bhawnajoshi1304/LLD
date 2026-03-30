@@ -1,0 +1,148 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+package "com.lld.elevator.model" {
+    class Building {
+        + name: String
+        + noOfFloors: int
+        + elevatorController: ElevatorController
+    }
+
+    class Floor {
+        - floorNumber: int
+        + getFloorNumber(): int
+    }
+
+    class Elevator {
+        - id: int
+        - floor: int
+        - direction: Direction
+        - state: ElevatorState
+        - observers: List<ElevatorObserver>
+        - requests: Queue<ElevatorRequest>
+        + getCurrentFloor(): int
+        + addRequest(ElevatorRequest): void
+        + setState(ElevatorState): void
+    }
+
+    class ExternalRequest {
+        - elevatorId: int
+        - floorNumber: int
+        - direction: Direction
+        + <<Create>> ExternalRequest(int, int, boolean, Direction)
+    }
+
+    class InternalRequest {
+        - elevatorId: int
+        - floor: int
+        + <<Create>> InternalRequest(int, int)
+        + execute(): void
+    }
+
+    enum Direction {
+        IDLE
+        UP
+        DOWN
+    }
+}
+
+package "com.lld.elevator.state" {
+    interface ElevatorState {
+        + onEnter(Elevator): void
+        + onExit(Elevator): void
+        + canAcceptRequest(Elevator): boolean
+        + canMove(Elevator): boolean
+        + handleRequest(Elevator, int): void
+        + getStateName(): String
+    }
+
+    class IdleState {
+        + onEnter(Elevator): void
+        + canAcceptRequest(Elevator): boolean
+        + canMove(Elevator): boolean
+        + handleRequest(Elevator, int): void
+    }
+
+    class MovingState {
+        + onEnter(Elevator): void
+        + canAcceptRequest(Elevator): boolean
+        + canMove(Elevator): boolean
+        + handleRequest(Elevator, int): void
+    }
+
+    class StoppedState {
+        + onEnter(Elevator): void
+        + canAcceptRequest(Elevator): boolean
+        + canMove(Elevator): boolean
+        + handleRequest(Elevator, int): void
+    }
+
+    class MaintenanceState {
+        + onEnter(Elevator): void
+        + canAcceptRequest(Elevator): boolean
+        + canMove(Elevator): boolean
+        + handleRequest(Elevator, int): void
+    }
+
+    ElevatorState <|.. IdleState
+    ElevatorState <|.. MovingState
+    ElevatorState <|.. StoppedState
+    ElevatorState <|.. MaintenanceState
+}
+
+package "com.lld.elevator.strategy" {
+    interface SchedulingStrategy {
+    }
+
+    class FCFSSchedulingStrategy {
+    }
+
+    class LookSchedulingStrategy {
+    }
+
+    class ScanSchedulingStrategy {
+    }
+
+    SchedulingStrategy <|.. FCFSSchedulingStrategy
+    SchedulingStrategy <|.. LookSchedulingStrategy
+    SchedulingStrategy <|.. ScanSchedulingStrategy
+}
+
+package "com.lld.elevator.observer" {
+    interface ElevatorObserver {
+        + onElevatorFloorChanged(Elevator, int): void
+        + onElevatorStateChanged(Elevator, ElevatorState): void
+    }
+
+    class ElevatorDisplay {
+        + onElevatorFloorChanged(Elevator, int): void
+        + onElevatorStateChanged(Elevator, ElevatorState): void
+    }
+
+    ElevatorObserver <|.. ElevatorDisplay
+}
+
+package "com.lld.elevator.service" {
+    class ElevatorController {
+        - elevators: List<Elevator>
+        - floors: List<Floor>
+        - schedulingStrategy: SchedulingStrategy
+        + requestFloor(int, int): void
+        + requestElevator(int, int, Direction): void
+    }
+}
+
+' Relationships
+com.lld.elevator.model.Building --> com.lld.elevator.service.ElevatorController
+com.lld.elevator.model.Elevator o-- com.lld.elevator.state.ElevatorState
+com.lld.elevator.model.Elevator --> com.lld.elevator.observer.ElevatorObserver
+com.lld.elevator.model.Elevator --> com.lld.elevator.model.ElevatorRequest
+
+com.lld.elevator.service.ElevatorController *-- com.lld.elevator.model.Elevator
+com.lld.elevator.service.ElevatorController o-- com.lld.elevator.strategy.SchedulingStrategy
+
+com.lld.elevator.observer.ElevatorDisplay ..> com.lld.elevator.model.Elevator
+
+@enduml
