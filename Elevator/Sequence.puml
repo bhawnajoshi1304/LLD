@@ -1,0 +1,57 @@
+@startuml
+' Auto-generated sequence diagram for Elevator
+
+actor User
+actor "Building System" as Building
+participant "ElevatorController" as Controller
+participant "SchedulingStrategy" as Strategy
+participant "Elevator" as Elevator
+participant "ElevatorState" as State
+
+== External Request ==
+User -> Building: Request elevator at floor X
+activate Building
+Building -> Controller: requestElevator(floor, direction)
+activate Controller
+Controller -> Strategy: selectElevator(elevators, floor, direction)
+Strategy --> Controller: selectedElevator
+Controller -> Elevator: addRequest(ExternalRequest)
+activate Elevator
+Elevator -> State: canAcceptRequest()
+State --> Elevator: boolean
+Elevator --> Controller: Request added
+return
+return
+return
+
+== Internal Request ==
+User -> Elevator: Press floor button (inside)
+activate Elevator
+Elevator -> Elevator: addRequest(InternalRequest)
+Elevator -> State: canAcceptRequest()
+State --> Elevator: boolean
+return
+
+== Elevator Movement ==
+loop While requests pending
+    Elevator -> Elevator: processNextRequest()
+    Elevator -> State: getStateName()
+    State --> Elevator: state
+    
+    alt Idle or Stopped
+        Elevator -> State: handleRequest(floor)
+        Elevator -> Elevator: moveTo(floor)
+        Elevator -> Elevator: notifyObservers()
+    else Moving
+        Elevator -> Elevator: continueToDestination()
+    else Maintenance
+        Elevator --> Controller: Cannot process request
+    end
+end
+
+== Elevator Arrival ==
+Elevator -> State: onEnter(Elevator)
+Elevator -> Elevator: openDoors()
+Elevator --> User: Arrived at destination
+
+@enduml

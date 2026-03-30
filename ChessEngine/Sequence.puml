@@ -1,0 +1,67 @@
+@startuml
+' Auto-generated sequence diagram for ChessEngine
+
+actor WhitePlayer
+actor BlackPlayer
+participant "Main" as Main
+participant "Engine" as Engine
+participant "Board" as Board
+participant "MoveStrategy" as Strategy
+
+== Game Setup ==
+WhitePlayer -> Main: Start game
+activate Main
+Main -> Engine: new Engine(whitePlayer, blackPlayer)
+activate Engine
+Engine -> Board: createBoard()
+activate Board
+Board --> Engine: Board ready
+return
+
+== Game Loop ==
+loop Until Game Over
+    Engine -> Engine: getCurrentPlayer()
+    
+    alt White's Turn
+        WhitePlayer -> Engine: makeMove(move)
+    else Black's Turn
+        BlackPlayer -> Engine: makeMove(move)
+    end
+    
+    activate Engine
+    Engine -> Board: isValidMove(move)
+    Board --> Engine: boolean
+    
+    alt Valid Move
+        Engine -> Strategy: isValidMove(board, move)
+        Strategy --> Engine: boolean
+        
+        Engine -> Board: makeMove(move)
+        Board --> Engine: success
+        
+        Engine -> Engine: checkGameState()
+        
+        alt Check Detected
+            Engine -> Engine: setState(CheckState)
+        else Checkmate
+            Engine -> Engine: setState(CheckmateState)
+            Engine --> Main: Game Over
+        else Stalemate
+            Engine -> Engine: setState(StalemateState)
+            Engine --> Main: Game Over
+        end
+        
+        Engine -> Engine: switchTurn()
+    else Invalid Move
+        Engine --> Player: Invalid move, try again
+    end
+    return
+end
+
+== Game End ==
+Engine -> Main: announceResult()
+Main --> WhitePlayer: Display winner/draw
+destroy Engine
+destroy Board
+
+@enduml

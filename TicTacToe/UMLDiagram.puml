@@ -28,7 +28,7 @@ package "com.lld.tictactoe.model" {
     class Player {
         - Character symbol
         - PlayerStrategy playerStrategy
-        ~ <<Create>> Player(Character,PlayerStrategy)
+        + <<Create>> Player(Character,PlayerStrategy)
         + Character getSymbol()
         + PlayerStrategy getPlayerStrategy()
     }
@@ -37,95 +37,123 @@ package "com.lld.tictactoe.model" {
         - Player player
         + <<Create>> GameState(Player)
         + <<Create>> GameState()
-        + Player getPlayer(@startuml
-skinparam packageStn skinparaerskinparam linetype ortho
-skinpataskinparam classAttribut>>
-package "com.lld.tictactoe.model+ b    class Board {
-        - {statiss        - {stati          - int size
-        - Char          - CharactGa        + <<Create>> Board(ra        + int getSize()
-      am        + boolean isVaeS        + void makeMove(Position,Charae         + boolean hasGameStateChanged(Game
-}        - boolean isWinningLine(Character[])
-    s      ontext {
-        - GameState currentStat    }
+        + Player getPlayer()
+        + {abstract} boolean isGameOver()
+    }
 
-    class Position eC
-   xt(   yer)
-        + void setCurrentState(        + <<Crea      }
+    class InProgressState {
+        + <<Create>> InProgressState(Player)
+        + boolean isGameOver()
+    }
 
-    class Player {
-        - CeS
-    ge        - Charact          - PlayerStrategy nt        ~ <<Create>> Player(Character,os        + Character getSymbol()
-        + PlayerStraam        + PlayerStrategy getPlog    }
+    class WonState {
+        + <<Create>> WonState(Player)
+        + boolean isGameOver()
+    }
 
-    abstract class GameState {
-       
-     +        - Player player
-     r(        + <<Create>> G o        + <<Create>> GameState(       +        + Player getPlayer(@staatskinparam packageStn skinparaerskin
+    class DrawState {
+        + boolean isGameOver()
+    }
 
-skinpataskinparam classAttribut>>
-package "com.lld.ticgepackage "com.lldtoe.strategy" {
+    GameState <|-- InProgressState
+    GameState <|-- WonState
+    GameState <|-- DrawState
+}
+
+package "com.lld.tictactoe.observer" {
+    class GameContext {
+        - GameState currentState
+        + <<Create>> GameContext(Player)
+        + void setCurrentState(GameState)
+        + boolean isGameOver()
+        + GameState getCurrentState()
+    }
+
+    interface GameEventListener {
+        ~ void onMoveMade(Position,Character)
+        ~ void onGameStateChanged(GameState)
+    }
+
+    class FileLoggerListener {
+        - String logFilePath
+        + <<Create>> FileLoggerListener(String)
+        + void onMoveMade(Position,Character)
+        + void onGameStateChanged(GameState)
+        - void log(String)
+    }
+
+    GameEventListener <|.. FileLoggerListener
+}
+
+package "com.lld.tictactoe.strategy" {
     interface PlayerStrategy {
-        ~ Position makeM        - Char          - CharactGa        + <<Create        am        + boolean isVaeS        + void makeMove(Position,Charae         + booleg}        - boolean isWinningLine(Character[])
-    s      ontext {
-        - GameState currentStat    }
+        ~ Position makeMove(Board)
+    }
 
-    classld    s      ontext {
-        - GameState ctory         - GameStaic}
-    class Position eC
-   xt(   yererS   xt(   yer)
-      ck        + vo.t
-    class Player {
-        - CeS
-    ge        - Chavoi        - CeS
-   ~     ge      la        + PlayerStraam        + PlayerStrategy getPlog    }
+    class HumanPlayerStrategy {
+        - String playerName
+        - Scanner scanner
+        + <<Create>> HumanPlayerStrategy(String)
+        + Position makeMove(Board)
+    }
 
-    abstract class GameState {
-       
-     +        - Player
- 
-    abstract class GameSyers
-        - int currentPlayerInde       
-     +        - Playeon     +       r(        + <<Create>> r>
-skinpataskinparam classAttribut>>
-package "com.lld.ticgepackage "com.lldtoe.strategy" {
-    interface PlayerStrategy {
-        ~ PositioChapackage "com.lld.ticgepackage "cte    interface PlayerStrategy {
-        ~ Position mact        ~ Position makeM     )
-    s      ontext {
-        - GameState currentStat    }
+    PlayerStrategy <|.. HumanPlayerStrategy
+}
 
-    classld    s      ontext {
-        - GameState ctory         - GameStaic}
-    class Position eC
-   xt(   yererS   xt(   yer)
-      ck        + vo.t
-           - GameStatle
-    classld    s      ontext {
-   tic        - GameState ctg)
-          class Position eC
-   xt(   yererS   xt(  ==   === CROSS-PACKAGE R      ck        + vo.t
-    ll    class Player {
-  ac        - CeS
-   ld    ge      od   ~     ge      la        + PlayecT
-    abstract class GameState {
-       
-     +        - Player
- 
-    abstracticT       
-     +        - Playeoe     +.P 
-    abstract class oe.game.TicTacToeGame --> com.lld     +        - Playeon     +       r
+package "com.lld.tictactoe.factory" {
+    class PlayerFactory {
+        + {static} Player createPlayer(Character,PlayerStrategy)
+    }
+}
 
-skinpataskinparam classAttribut>>
-package "com.lld.ticgepack.mpackage "com.lld.ticgepackage "c.m    interface PlayerStrategy {
-        ~ PositioChapm.        ~ PositioChapackage ">         ~ Position mact        ~ Position makeM     )
-    s      ontext {
-        -.t    s      ontext {
-        - GameState currentStat d         - GameStatto
-    classld    s      ontext {
-   tac        - GameState ctory     c    class Position eC
-   xt(   yererS   xt(  oe   xt(   yererS   xtry      ck        + vo.t
-    te           - GameStatm.    classld    s      .F   tic        - GameState ctg.t          class Position eC
- ld   xt(   yererS   xt(  == gg    ll    class Player {
-  ac   .model.GameState
+package "com.lld.tictactoe.game" {
+    interface BoardGame {
+        ~ void play()
+        ~ void switchPlayer()
+        ~ void announceResult()
+    }
+
+    class TicTacToeGame {
+        - Board board
+        - int numberOfPlayers
+        - List<Player> players
+        - int currentPlayerIndex
+        - GameContext gameContext
+        - List<GameEventListener> listeners
+        + void addListener(GameEventListener)
+        + void notifyMoveMade(Position,Character)
+        + void notifyGameStateChanged(GameState)
+        + <<Create>> TicTacToeGame(int,List<PlayerStrategy>,List<Character>,int)
+        + void play()
+        + void switchPlayer()
+        + void announceResult()
+    }
+
+    BoardGame <|.. TicTacToeGame
+}
+
+package "com.lld.tictactoe.demo" {
+    class TicTacDemoApplication {
+        - {static} Scanner scanner
+        - {static} boolean getChoice(String)
+        - {static} char getSymbol(String)
+        + {static} void main(String[])
+    }
+}
+
+' ========= CROSS-PACKAGE RELATIONSHIPS =========
+com.lld.tictactoe.game.TicTacToeGame *-- com.lld.tictactoe.model.Board
+com.lld.tictactoe.game.TicTacToeGame *-- com.lld.tictactoe.observer.GameContext
+com.lld.tictactoe.game.TicTacToeGame *-- com.lld.tictactoe.model.Player
+com.lld.tictactoe.game.TicTacToeGame --> com.lld.tictactoe.observer.GameEventListener
+
+com.lld.tictactoe.observer.GameContext --> com.lld.tictactoe.model.GameState
+com.lld.tictactoe.model.GameState --> com.lld.tictactoe.model.Player
+com.lld.tictactoe.model.Player --> com.lld.tictactoe.strategy.PlayerStrategy
+com.lld.tictactoe.model.Board --> com.lld.tictactoe.model.Position
+com.lld.tictactoe.model.Board --> com.lld.tictactoe.observer.GameContext
+
+com.lld.tictactoe.factory.PlayerFactory ..> com.lld.tictactoe.model.Player
+com.lld.tictactoe.factory.PlayerFactory ..> com.lld.tictactoe.strategy.PlayerStrategy
 
 @enduml
