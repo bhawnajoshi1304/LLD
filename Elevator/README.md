@@ -4,11 +4,11 @@ A Low Level Design implementation of an Elevator Control System demonstrating va
 
 ## UML Diagram
 
-[![Class Diagram](https://tinyurl.com/2amfkvop)](https://tinyurl.com/2amfkvop)<!--![Class Diagram](./UMLClass.puml)-->
+[![Class Diagram](https://tinyurl.com/28nhc2z3)](https://tinyurl.com/28nhc2z3)<!--![Class Diagram](./UMLClass.puml)-->
 
 ## Sequence Diagram
 
-[![Sequence Diagram](https://tinyurl.com/24z48d6u)](https://tinyurl.com/24z48d6u)<!--![Sequence Diagram](./Sequence.puml)-->
+[![Sequence Diagram](https://tinyurl.com/2b6rjex6)](https://tinyurl.com/2b6rjex6)<!--![Sequence Diagram](./Sequence.puml)-->
 
 ## Design Patterns Used
 
