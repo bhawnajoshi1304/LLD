@@ -1,36 +1,27 @@
 package com.lld.elevator.state;
 
 import com.lld.elevator.model.Elevator;
-import com.lld.elevator.model.Direction;
 
 public class IdleState implements ElevatorState {
+    public static final IdleState INSTANCE = new IdleState();
     @Override
     public void onEnter(Elevator elevator) {
-        elevator.setDirection(Direction.IDLE);
         System.out.println("Elevator " + elevator.getId() + " is idle");
     }
-
-    @Override
-    public void onExit(Elevator elevator) {
-    }
-
-    @Override
-    public boolean canAcceptRequest(Elevator elevator) {
-        return true;
-    }
-
-    @Override
-    public boolean canMove(Elevator elevator) {
-        return !elevator.getRequestsQueue().isEmpty();
-    }
-
-    @Override
-    public void handleRequest(Elevator elevator, int floor) {
-        elevator.addRequest(new com.lld.elevator.model.InternalRequest(elevator.getId(), floor));
-    }
-
     @Override
     public String getStateName() {
         return "IDLE";
+    }
+    @Override
+    public ElevatorState step(Elevator elevator) {
+        try {
+            if (elevator.hasPendingRequests()) {
+                return MovingUpState.INSTANCE;
+            }
+            return this;
+        } catch (Exception e) {
+            System.err.println("Error in IdleState for elevator " + elevator.getId() + ": " + e.getMessage());
+            return this; // Stay in idle state on error
+        }
     }
 }

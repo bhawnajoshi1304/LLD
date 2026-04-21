@@ -1,4 +1,4 @@
-# Elevator System
+# Elevator
 
 A Low Level Design implementation of an Elevator Control System demonstrating various design patterns.
 
@@ -14,6 +14,6 @@ A Low Level Design implementation of an Elevator Control System demonstrating va
 
 | Pattern | Package | Description |
 |---------|---------|-------------|
-| **State** | `state` | Elevator operational states (Idle, Moving, Stopped, Maintenance) |
+| **State** | `state` | Elevator operational states (Idle, MovingUp, MovingDown, Stopped, Maintenance) |
 | **Strategy** | `strategy` | Different scheduling algorithms (FCFS, LOOK, SCAN) |
 | **Observer** | `observer` | Display and logging observers |

@@ -1,56 +1,89 @@
 @startuml
 
 actor User
-actor "Building System" as Building
+participant "Building" as Building
 participant "ElevatorController" as Controller
-participant "SchedulingStrategy" as Strategy
 participant "Elevator" as Elevator
+participant "SchedulingStrategy" as Strategy
 participant "ElevatorState" as State
+participant "ElevatorObserver" as Observer
 
 == External Request ==
 User -> Building: Request elevator at floor X
 activate Building
-Building -> Controller: requestElevator(floor, direction)
+Building -> Controller: addRequest(ExternalRequest)
 activate Controller
-Controller -> Strategy: selectElevator(elevators, floor, direction)
-Strategy --> Controller: selectedElevator
-Controller -> Elevator: addRequest(ExternalRequest)
+Controller -> Elevator: addRequest(request)
 activate Elevator
-Elevator -> State: canAcceptRequest()
-State --> Elevator: boolean
-Elevator --> Controller: Request added
-return
-return
-return
+Elevator -> Strategy: addRequest(request, elevator)
+activate Strategy
+Strategy --> Elevator: request added
+deactivate Strategy
+Elevator --> Controller: Request processed
+deactivate Elevator
+Controller --> Building: Request distributed
+deactivate Controller
+deactivate Building
 
 == Internal Request ==
-User -> Elevator: Press floor button (inside)
+User -> Controller: Press floor button (inside)
+activate Controller
+Controller -> Elevator: addRequest(request)
 activate Elevator
-Elevator -> Elevator: addRequest(InternalRequest)
-Elevator -> State: canAcceptRequest()
-State --> Elevator: boolean
-return
+Elevator -> Strategy: addRequest(request, elevator)
+activate Strategy
+Strategy --> Elevator: request added
+deactivate Strategy
+Elevator --> Controller: Request processed
+deactivate Elevator
+deactivate Controller
 
 == Elevator Movement ==
 loop While requests pending
-    Elevator -> Elevator: processNextRequest()
-    Elevator -> State: getStateName()
-    State --> Elevator: state
+    Building -> Controller: step()
+    activate Controller
+    Controller -> Elevator: step()
+    activate Elevator
+    Elevator -> State: step(elevator)
+    activate State
+    State --> Elevator: newState
     
-    alt Idle or Stopped
-        Elevator -> State: handleRequest(floor)
-        Elevator -> Elevator: moveTo(floor)
-        Elevator -> Elevator: notifyObservers()
-    else Moving
-        Elevator -> Elevator: continueToDestination()
-    else Maintenance
-        Elevator --> Controller: Cannot process request
+    alt State Changed
+        Elevator -> Observer: onElevatorStateChanged(newState)
     end
+    
+    alt Floor Changed
+        Elevator -> Observer: onElevatorFloorChanged(floor)
+    end
+    
+    deactivate State
+    deactivate Elevator
+    deactivate Controller
 end
 
-== Elevator Arrival ==
-Elevator -> State: onEnter(Elevator)
-Elevator -> Elevator: openDoors()
-Elevator --> User: Arrived at destination
+== State Transitions ==
+Elevator -> State: step(elevator)
+activate State
+State -> Strategy: getNextFloor(elevator)
+activate Strategy
+Strategy --> State: nextFloor
+deactivate Strategy
+
+alt nextFloor > currentFloor
+    State --> Elevator: transition to MovingUpState
+else nextFloor < currentFloor
+    State --> Elevator: transition to MovingDownState
+else nextFloor == currentFloor
+    State --> Elevator: transition to StoppedState
+end
+deactivate State
+
+== Strategy Comparison ==
+note over Strategy
+Different strategies handle same requests differently:
+FCFS: Strict order (5->10->3)
+SCAN: Optimize to min/max (5->10->15->0->3) 
+LOOK: Only requested floors (5->10->3)
+end note
 
 @enduml

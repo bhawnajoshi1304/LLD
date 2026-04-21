@@ -1,9 +1,8 @@
 package com.lld.elevator.observer;
 
-import com.lld.elevator.model.Elevator;
-import com.lld.elevator.model.ElevatorState;
+import com.lld.elevator.state.ElevatorState;
 
 public interface ElevatorObserver {
-    void onElevatorFloorChanged(Elevator elevator, int floor);
-    void onElevatorStateChanged(Elevator elevator, ElevatorState state);
+    void onElevatorFloorChanged( int floor);
+    void onElevatorStateChanged( ElevatorState state);
 }

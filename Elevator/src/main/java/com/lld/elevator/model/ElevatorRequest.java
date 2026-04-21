@@ -1,3 +1,5 @@
 package com.lld.elevator.model;
 
-public interface ElevatorRequest{ }
+public interface ElevatorRequest{
+    Integer getFloor();
+}

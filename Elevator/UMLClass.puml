@@ -3,43 +3,70 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-
-package "com.lld.elevator.model" {
+' =======================================================
+' MODEL PACKAGE
+' =======================================================
+package "model" {
     class Building {
-        + name: String
-        + noOfFloors: int
-        + elevatorController: ElevatorController
+        - name: String
+        - floors: List<Floor>
+        - elevatorController: ElevatorController
+        - hallPanels: List<HallPanel>
+        - elevatorPanels: List<ElevatorPanel>
+        + Building(String, int, int)
+        + Building(String, int, List<Elevator>)
+        + step(): void
+        + addExternalRequest(int, Direction): void
+        + getElevators(): List<Elevator>
+        + setupObservers(List<Elevator>, String): void
+        + setupPanels(List<Elevator>): void
     }
 
     class Floor {
-        - floorNumber: int
-        + getFloorNumber(): int
+        - id: int
+        - hallPanels: List<HallPanel>
+        + Floor(int, int, List<Elevator>)
     }
 
     class Elevator {
         - id: int
-        - floor: int
-        - direction: Direction
+        - minFloor: int
+        - maxFloor: int
+        - currentFloor: int
         - state: ElevatorState
-        - observers: List<ElevatorObserver>
-        - requests: Queue<ElevatorRequest>
-        + getCurrentFloor(): int
+        - strategy: SchedulingStrategy
+        - stateObservers: List<ElevatorObserver>
+        - floorObservers: List<ElevatorObserver>
+        + Elevator(int, int, SchedulingStrategy)
+        + step(): void
         + addRequest(ElevatorRequest): void
-        + setState(ElevatorState): void
+        + addStateObserver(ElevatorObserver): void
+        + addFloorObserver(ElevatorObserver): void
+        + notifyFloorObservers(): void
+        + notifyStateObservers(): void
+        + hasPendingRequests(): boolean
+        + getCurrentFloor(): int
+        + getState(): ElevatorState
+        + getStrategy(): SchedulingStrategy
+        + setCurrentFloor(int): void
+    }
+
+    interface ElevatorRequest {
+        + getFloor(): Integer
     }
 
     class ExternalRequest {
-        - elevatorId: int
-        - floorNumber: int
+        - floor: int
         - direction: Direction
-        + <<Create>> ExternalRequest(int, int, boolean, Direction)
+        + ExternalRequest(int, Direction)
+        + getFloor(): Integer
+        + getDirection(): Direction
     }
 
     class InternalRequest {
-        - elevatorId: int
         - floor: int
-        + <<Create>> InternalRequest(int, int)
-        + execute(): void
+        + InternalRequest(int)
+        + getFloor(): Integer
     }
 
     enum Direction {
@@ -47,104 +74,187 @@ package "com.lld.elevator.model" {
         UP
         DOWN
     }
+
+    class ElevatorController {
+        - elevators: List<Elevator>
+        - strategy: SchedulingStrategy
+        + ElevatorController(List<Elevator>, SchedulingStrategy)
+        + step(): void
+        + addRequest(ElevatorRequest): void
+        + addRequestToSpecificElevator(int, ElevatorRequest): void
+        + addObserver(ElevatorObserver): void
+        + areAllElevatorsIdle(): boolean
+    }
 }
 
-package "com.lld.elevator.state" {
+' =======================================================
+' MEDIATOR PACKAGE
+' =======================================================
+package "mediator" {
+    class Button {
+        - action: Runnable
+        + setOnPressListener(Runnable): void
+        + press(): void
+    }
+
+    class HallPanel {
+        - floor: int
+        - elevator: Elevator
+        - upButton: Button
+        - downButton: Button
+        + HallPanel(Elevator, int)
+        + getFloor(): int
+    }
+
+    class ElevatorPanel {
+        - elevator: Elevator
+        - floorButtons: Map<Integer, Button>
+        + ElevatorPanel(Elevator, int)
+    }
+}
+
+
+' =======================================================
+' STATE PACKAGE
+' =======================================================
+package "state" {
     interface ElevatorState {
         + onEnter(Elevator): void
-        + onExit(Elevator): void
-        + canAcceptRequest(Elevator): boolean
-        + canMove(Elevator): boolean
-        + handleRequest(Elevator, int): void
         + getStateName(): String
+        + step(Elevator): ElevatorState
     }
 
     class IdleState {
+        - INSTANCE: IdleState
         + onEnter(Elevator): void
-        + canAcceptRequest(Elevator): boolean
-        + canMove(Elevator): boolean
-        + handleRequest(Elevator, int): void
+        + getStateName(): String
+        + step(Elevator): ElevatorState
     }
 
-    class MovingState {
+    class MovingUpState {
+        - INSTANCE: MovingUpState
         + onEnter(Elevator): void
-        + canAcceptRequest(Elevator): boolean
-        + canMove(Elevator): boolean
-        + handleRequest(Elevator, int): void
+        + getStateName(): String
+        + step(Elevator): ElevatorState
+    }
+
+    class MovingDownState {
+        - INSTANCE: MovingDownState
+        + onEnter(Elevator): void
+        + getStateName(): String
+        + step(Elevator): ElevatorState
     }
 
     class StoppedState {
+        - INSTANCE: StoppedState
         + onEnter(Elevator): void
-        + canAcceptRequest(Elevator): boolean
-        + canMove(Elevator): boolean
-        + handleRequest(Elevator, int): void
+        + getStateName(): String
+        + step(Elevator): ElevatorState
     }
-
-    class MaintenanceState {
-        + onEnter(Elevator): void
-        + canAcceptRequest(Elevator): boolean
-        + canMove(Elevator): boolean
-        + handleRequest(Elevator, int): void
-    }
-
-    ElevatorState <|.. IdleState
-    ElevatorState <|.. MovingState
-    ElevatorState <|.. StoppedState
-    ElevatorState <|.. MaintenanceState
 }
 
-package "com.lld.elevator.strategy" {
+' =======================================================
+' STRATEGY PACKAGE
+' =======================================================
+package "strategy" {
     interface SchedulingStrategy {
+        + addRequest(ElevatorRequest, Elevator): void
+        + getNextStop(Elevator): int
+        + getNextFloor(Elevator): int
+        + removeReachedFloor(int): void
+        + hasRequests(): boolean
     }
 
     class FCFSSchedulingStrategy {
-    }
-
-    class LookSchedulingStrategy {
+        - requests: Queue<Integer>
+        + addRequest(ElevatorRequest, Elevator): void
+        + getNextStop(Elevator): int
+        + getNextFloor(Elevator): int
+        + removeReachedFloor(int): void
+        + hasRequests(): boolean
     }
 
     class ScanSchedulingStrategy {
+        - upRequests: Queue<Integer>
+        - downRequests: Queue<Integer>
+        + addRequest(ElevatorRequest, Elevator): void
+        + getNextStop(Elevator): int
+        + getNextFloor(Elevator): int
+        + removeReachedFloor(int): void
+        + hasRequests(): boolean
     }
 
-    SchedulingStrategy <|.. FCFSSchedulingStrategy
-    SchedulingStrategy <|.. LookSchedulingStrategy
-    SchedulingStrategy <|.. ScanSchedulingStrategy
+    class LookSchedulingStrategy {
+        - upRequests: Queue<Integer>
+        - downRequests: Queue<Integer>
+        + addRequest(ElevatorRequest, Elevator): void
+        + getNextStop(Elevator): int
+        + getNextFloor(Elevator): int
+        + removeReachedFloor(int): void
+        + hasRequests(): boolean
+    }
 }
 
-package "com.lld.elevator.observer" {
+' =======================================================
+' OBSERVER PACKAGE
+' =======================================================
+package "observer" {
     interface ElevatorObserver {
-        + onElevatorFloorChanged(Elevator, int): void
-        + onElevatorStateChanged(Elevator, ElevatorState): void
+        + onElevatorFloorChanged(int): void
+        + onElevatorStateChanged(ElevatorState): void
     }
 
     class ElevatorDisplay {
-        + onElevatorFloorChanged(Elevator, int): void
-        + onElevatorStateChanged(Elevator, ElevatorState): void
+        - currentFloor: int
+        - currentState: String
+        + onElevatorFloorChanged(int): void
+        + onElevatorStateChanged(ElevatorState): void
+        - displayCombined(): void
     }
 
-    ElevatorObserver <|.. ElevatorDisplay
-}
-
-package "com.lld.elevator.service" {
-    class ElevatorController {
-        - elevators: List<Elevator>
-        - floors: List<Floor>
-        - schedulingStrategy: SchedulingStrategy
-        + requestFloor(int, int): void
-        + requestElevator(int, int, Direction): void
+    class ElevatorLogger {
+        - elevatorId: int
+        - buildingName: String
+        - logWriter: PrintWriter
+        - globalStepCounter: int
+        + ElevatorLogger(int, String)
+        + onElevatorFloorChanged(int): void
+        + onElevatorStateChanged(ElevatorState): void
+        + close(): void
+        + incrementStepCounter(): void
     }
 }
 
 ' Relationships
-com.lld.elevator.model.Building --> com.lld.elevator.service.ElevatorController
-com.lld.elevator.model.Elevator o-- com.lld.elevator.state.ElevatorState
-com.lld.elevator.model.Elevator --> com.lld.elevator.observer.ElevatorObserver
-com.lld.elevator.model.Elevator --> com.lld.elevator.model.ElevatorRequest
+Building *-- "*" Floor
+Building *-- ElevatorController
+Building *-- "*" HallPanel
+Building *-- "*" ElevatorPanel
+ElevatorController *-- "*" Elevator
+Elevator o-- ElevatorState
+Elevator o-- SchedulingStrategy
+Elevator *-- "*" ElevatorObserver
+HallPanel *-- "2" Button
+ElevatorPanel *-- "*" Button
+HallPanel --> Elevator
+ElevatorPanel --> Elevator
 
-com.lld.elevator.service.ElevatorController *-- com.lld.elevator.model.Elevator
-com.lld.elevator.service.ElevatorController o-- com.lld.elevator.strategy.SchedulingStrategy
+' Cross-package relationships
+HallPanel ..> model.Elevator
+ElevatorPanel ..> model.Elevator
+Button ..> model.Elevator
 
-com.lld.elevator.observer.ElevatorDisplay ..> com.lld.elevator.model.Elevator
+' Inheritance
+ExternalRequest ..|> ElevatorRequest
+InternalRequest ..|> ElevatorRequest
+ElevatorState <|.. IdleState
+ElevatorState <|.. MovingUpState
+ElevatorState <|.. MovingDownState
+ElevatorState <|.. StoppedState
+SchedulingStrategy <|.. FCFSSchedulingStrategy
+SchedulingStrategy <|.. ScanSchedulingStrategy
+SchedulingStrategy <|.. LookSchedulingStrategy
+ElevatorObserver <|.. ElevatorDisplay
+ElevatorObserver <|.. ElevatorLogger
 
 @enduml
-' Trigger workflow update
