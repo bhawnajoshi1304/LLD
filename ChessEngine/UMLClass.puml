@@ -3,9 +3,7 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-
-package "com.lld.chessengine.model" {
-    class Board {
+class Board {
         - cells: Cell[][]
         - pieces: Set<Piece>
         + getCell(Position): Cell
@@ -57,6 +55,27 @@ package "com.lld.chessengine.model" {
         + setState(GameState): void
     }
 
+    class ThreadSafeEngine {
+        - gameStatus: AtomicReference<GameState>
+        - gameActive: AtomicBoolean
+        - gameLock: ReentrantReadWriteLock
+        - moveValidationExecutor: ExecutorService
+        - gameStateExecutor: ExecutorService
+        - moveHistory: Map<String, Move>
+        - moveCounter: AtomicInteger
+        - kingInCheck: AtomicBoolean
+        - kingPositions: Map<Color, Position>
+        - checkValidationCache: Map<String, Boolean>
+        + startGame(String, String, PlayerStrategy, PlayerStrategy): void
+        + play(): void
+        + validateAndExecuteMove(Position, Position): boolean
+        + wouldLeaveKingInCheck(Position, Position): boolean
+        + updateGameState(): void
+        + isCheckmate(Color): boolean
+        + isStalemate(Color): boolean
+        + shutdown(): void
+    }
+
     enum Color {
         WHITE
         BLACK
@@ -69,10 +88,8 @@ package "com.lld.chessengine.model" {
         LOST
         ACTIVE
     }
-}
 
-package "com.lld.chessengine.strategy" {
-    interface MoveStrategy {
+interface MoveStrategy {
         + isValidMove(Board, Move): boolean
     }
 
@@ -111,16 +128,29 @@ package "com.lld.chessengine.strategy" {
         + createPiece(PieceType, Color): Piece
     }
 
+    interface PlayerStrategy {
+        + getMove(Board): Move
+    }
+
+    class HumanPlayerStrategy {
+        + getMove(Board): Move
+    }
+
+    class ComputerPlayerStrategy {
+        + getMove(Board): Move
+    }
+
     MoveStrategy <|.. PawnMoveStrategy
     MoveStrategy <|.. KnightMoveStrategy
     MoveStrategy <|.. BishopMoveStrategy
     MoveStrategy <|.. RookMoveStrategy
     MoveStrategy <|.. QueenMoveStrategy
     MoveStrategy <|.. KingMoveStrategy
-}
 
-package "com.lld.chessengine.state" {
-    interface GameState {
+    PlayerStrategy <|.. HumanPlayerStrategy
+    PlayerStrategy <|.. ComputerPlayerStrategy
+
+interface GameState {
         + onEnter(Engine): void
         + onExit(Engine): void
         + canMove(Engine, Board): boolean
@@ -158,23 +188,24 @@ package "com.lld.chessengine.state" {
     GameState <|.. CheckState
     GameState <|.. CheckmateState
     GameState <|.. StalemateState
-}
 
 ' Relationships
-com.lld.chessengine.model.Board *-- com.lld.chessengine.model.Cell
-com.lld.chessengine.model.Cell --> com.lld.chessengine.strategy.Piece
-com.lld.chessengine.model.Cell --> com.lld.chessengine.model.Position
-com.lld.chessengine.model.Engine *-- com.lld.chessengine.model.Board
-com.lld.chessengine.model.Engine *-- com.lld.chessengine.model.Player
-com.lld.chessengine.model.Engine o-- com.lld.chessengine.state.GameState
-com.lld.chessengine.model.Move --> com.lld.chessengine.model.Position
+Board *-- Cell
+Cell --> Piece
+Cell --> Position
+Engine *-- Board
+Engine *-- Player
+Engine o-- GameState
+Move --> Position
+ThreadSafeEngine --|> Engine
 
-com.lld.chessengine.strategy.Piece --> com.lld.chessengine.strategy.MoveStrategy
-com.lld.chessengine.strategy.PieceFactory ..> com.lld.chessengine.strategy.Piece
-com.lld.chessengine.strategy.PieceFactory ..> com.lld.chessengine.model.Color
+Piece --> MoveStrategy
+PieceFactory ..> Piece
+PieceFactory ..> Color
 
-com.lld.chessengine.model.Player --> com.lld.chessengine.model.Color
-com.lld.chessengine.model.Engine --> com.lld.chessengine.state.GameState
+Player --> Color
+Engine --> GameState
+Engine --> PlayerStrategy
 
 @enduml
 ' Trigger workflow update

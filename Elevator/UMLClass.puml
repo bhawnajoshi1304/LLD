@@ -3,11 +3,7 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-' =======================================================
-' MODEL PACKAGE
-' =======================================================
-package "model" {
-    class Building {
+class Building {
         - name: String
         - floors: List<Floor>
         - elevatorController: ElevatorController
@@ -85,19 +81,14 @@ package "model" {
         + addObserver(ElevatorObserver): void
         + areAllElevatorsIdle(): boolean
     }
-}
 
-' =======================================================
-' MEDIATOR PACKAGE
-' =======================================================
-package "mediator" {
-    class Button {
+class Button {
         - action: Runnable
         + setOnPressListener(Runnable): void
         + press(): void
     }
 
-    class HallPanel {
+class HallPanel {
         - floor: int
         - elevator: Elevator
         - upButton: Button
@@ -106,19 +97,13 @@ package "mediator" {
         + getFloor(): int
     }
 
-    class ElevatorPanel {
+class ElevatorPanel {
         - elevator: Elevator
         - floorButtons: Map<Integer, Button>
         + ElevatorPanel(Elevator, int)
     }
-}
 
-
-' =======================================================
-' STATE PACKAGE
-' =======================================================
-package "state" {
-    interface ElevatorState {
+interface ElevatorState {
         + onEnter(Elevator): void
         + getStateName(): String
         + step(Elevator): ElevatorState
@@ -151,13 +136,14 @@ package "state" {
         + getStateName(): String
         + step(Elevator): ElevatorState
     }
-}
 
-' =======================================================
-' STRATEGY PACKAGE
-' =======================================================
-package "strategy" {
-    interface SchedulingStrategy {
+    class MaintenanceState {
+        + onEnter(Elevator): void
+        + getStateName(): String
+        + step(Elevator): ElevatorState
+    }
+
+interface SchedulingStrategy {
         + addRequest(ElevatorRequest, Elevator): void
         + getNextStop(Elevator): int
         + getNextFloor(Elevator): int
@@ -193,13 +179,8 @@ package "strategy" {
         + removeReachedFloor(int): void
         + hasRequests(): boolean
     }
-}
 
-' =======================================================
-' OBSERVER PACKAGE
-' =======================================================
-package "observer" {
-    interface ElevatorObserver {
+interface ElevatorObserver {
         + onElevatorFloorChanged(int): void
         + onElevatorStateChanged(ElevatorState): void
     }
@@ -223,7 +204,6 @@ package "observer" {
         + close(): void
         + incrementStepCounter(): void
     }
-}
 
 ' Relationships
 Building *-- "*" Floor
@@ -239,11 +219,6 @@ ElevatorPanel *-- "*" Button
 HallPanel --> Elevator
 ElevatorPanel --> Elevator
 
-' Cross-package relationships
-HallPanel ..> model.Elevator
-ElevatorPanel ..> model.Elevator
-Button ..> model.Elevator
-
 ' Inheritance
 ExternalRequest ..|> ElevatorRequest
 InternalRequest ..|> ElevatorRequest
@@ -251,6 +226,7 @@ ElevatorState <|.. IdleState
 ElevatorState <|.. MovingUpState
 ElevatorState <|.. MovingDownState
 ElevatorState <|.. StoppedState
+ElevatorState <|.. MaintenanceState
 SchedulingStrategy <|.. FCFSSchedulingStrategy
 SchedulingStrategy <|.. ScanSchedulingStrategy
 SchedulingStrategy <|.. LookSchedulingStrategy

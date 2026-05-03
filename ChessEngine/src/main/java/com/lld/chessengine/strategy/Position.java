@@ -1,5 +1,8 @@
 package com.lld.chessengine.strategy;
 
+import lombok.Getter;
+
+@Getter
 public class Position {
     private final char column;
     private final int row;
@@ -21,16 +24,21 @@ public class Position {
         return new Position(newCol, newRow);
     }
 
-    public char getColumn() {
-        return column;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
     @Override
     public String toString() {
         return "" + column + row;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Position position = (Position) obj;
+        return column == position.column && row == position.row;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * column + row;
     }
 }

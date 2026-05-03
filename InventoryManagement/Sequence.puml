@@ -1,0 +1,37 @@
+@startuml
+
+actor User
+participant "Main" as Main
+
+== Application Start ==
+User -> Main: Run with --demo or --manual flag
+activate Main
+Main -> Main: setupLogging()
+
+alt Demo Mode
+    Main -> Main: runDemoMode()
+    Main --> User: Display demo information
+else Manual Mode
+    Main -> Main: runManualMode()
+    
+    loop Until user exits
+        Main --> User: Display menu options
+        User -> Main: Select option
+        
+        alt Option 1: Add Product
+            Main --> User: "Add Product - Under development"
+        else Option 2: Update Stock
+            Main --> User: "Update Stock - Under development"
+        else Option 3: View Inventory
+            Main --> User: "View Inventory - Under development"
+        else Option 4: Exit
+            Main --> User: "Exiting Manual Mode..."
+        else Invalid option
+            Main --> User: "Invalid option. Try again."
+        end
+    end
+end
+
+deactivate Main
+
+@enduml

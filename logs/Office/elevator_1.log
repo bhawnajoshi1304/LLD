@@ -1,0 +1,156 @@
+=== Elevator 1 Activity Log ===
+Step | Type | Value
+------------------
+125 | STATE | MOVING UP
+125 | FLOOR | 1
+125 | FLOOR | 1
+125 | FLOOR | 2
+125 | FLOOR | 2
+125 | FLOOR | 3
+125 | FLOOR | 3
+125 | FLOOR | 4
+125 | FLOOR | 4
+125 | FLOOR | 5
+125 | FLOOR | 5
+125 | FLOOR | 6
+125 | FLOOR | 6
+125 | FLOOR | 7
+125 | FLOOR | 7
+125 | FLOOR | 8
+125 | FLOOR | 8
+125 | FLOOR | 9
+125 | FLOOR | 9
+125 | FLOOR | 10
+125 | FLOOR | 10
+125 | FLOOR | 11
+125 | FLOOR | 11
+125 | FLOOR | 12
+125 | FLOOR | 12
+=== Elevator 1 Activity Log ===
+Step | Type | Value
+------------------
+62 | STATE | MOVING UP
+92 | FLOOR | 1
+92 | FLOOR | 1
+92 | FLOOR | 2
+92 | FLOOR | 2
+92 | FLOOR | 3
+92 | FLOOR | 3
+92 | FLOOR | 4
+92 | FLOOR | 4
+92 | FLOOR | 5
+92 | FLOOR | 5
+92 | FLOOR | 6
+92 | FLOOR | 6
+92 | FLOOR | 7
+92 | FLOOR | 7
+92 | FLOOR | 8
+92 | FLOOR | 8
+92 | FLOOR | 9
+92 | FLOOR | 9
+92 | FLOOR | 10
+92 | FLOOR | 10
+92 | FLOOR | 11
+92 | FLOOR | 11
+92 | FLOOR | 12
+92 | FLOOR | 12
+92 | FLOOR | 13
+92 | FLOOR | 13
+92 | FLOOR | 14
+92 | FLOOR | 14
+92 | FLOOR | 15
+92 | FLOOR | 15
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+92 | STATE | STOPPED
+92 | STATE | IDLE
+92 | STATE | MOVING UP
+=== Elevator 1 Activity Log ===
+Step | Type | Value
+------------------
+95 | STATE | MOVING UP
+125 | FLOOR | 1
+125 | FLOOR | 1
+125 | FLOOR | 2
+125 | FLOOR | 2
+125 | FLOOR | 3
+125 | FLOOR | 3
+125 | FLOOR | 4
+125 | FLOOR | 4
+125 | FLOOR | 5
+125 | FLOOR | 5
+125 | FLOOR | 6
+125 | FLOOR | 6
+125 | FLOOR | 7
+125 | FLOOR | 7
+125 | FLOOR | 8
+125 | FLOOR | 8
+125 | FLOOR | 9
+125 | FLOOR | 9
+=== Elevator 1 Activity Log ===
+Step | Type | Value
+------------------
+82 | STATE | MOVING UP
+125 | FLOOR | 1
+125 | FLOOR | 1
+=== Elevator 1 Activity Log ===
+Step | Type | Value
+------------------
+89 | STATE | MOVING UP
+125 | FLOOR | 1
+125 | FLOOR | 1
+125 | FLOOR | 2
+125 | FLOOR | 2
+125 | FLOOR | 3
+125 | FLOOR | 3
+125 | FLOOR | 4
+125 | FLOOR | 4
+125 | FLOOR | 5
+125 | FLOOR | 5
+125 | FLOOR | 6
+125 | FLOOR | 6
+125 | FLOOR | 7
+125 | FLOOR | 7
+125 | FLOOR | 8
+125 | FLOOR | 8
+125 | FLOOR | 9
+125 | FLOOR | 9
+125 | FLOOR | 10
+125 | FLOOR | 10
+125 | FLOOR | 11
+125 | FLOOR | 11
+125 | FLOOR | 12
+125 | FLOOR | 12
+125 | FLOOR | 13
+125 | FLOOR | 13
+125 | FLOOR | 14
+125 | FLOOR | 14
+125 | FLOOR | 15
+125 | FLOOR | 15
+125 | STATE | STOPPED
+125 | STATE | IDLE

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ChessEngine/chessengine.iml" filepath="$PROJECT_DIR$/ChessEngine/chessengine.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Elevator/elevator.iml" filepath="$PROJECT_DIR$/Elevator/elevator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/InventoryManagement/inventorymanagement.iml" filepath="$PROJECT_DIR$/InventoryManagement/inventorymanagement.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ParkingLot/parkinglot.iml" filepath="$PROJECT_DIR$/ParkingLot/parkinglot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TicTacToe/tictactoe.iml" filepath="$PROJECT_DIR$/TicTacToe/tictactoe.iml" />
+    </modules>
+  </component>
+</project>

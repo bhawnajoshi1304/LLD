@@ -1,7 +1,9 @@
 package com.lld.parkinglot.model.factory;
 
 import com.lld.parkinglot.enums.VehicleType;
+import lombok.Getter;
 
+@Getter
 public class Vehicle {
     private final String numberPlate;
     private final VehicleType type;
@@ -11,8 +13,5 @@ public class Vehicle {
     }
     public VehicleType getVehicleType() {
         return type;
-    }
-    public String getNumberPlate(){
-        return numberPlate;
     }
 }

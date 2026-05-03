@@ -1,10 +1,12 @@
 package com.lld.parkinglot.model;
 
 import com.lld.parkinglot.model.factory.ParkingSpot;
+import lombok.Getter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+@Getter
 public class ParkingSession {
     private final User user;
     private final ParkingSpot spot;
@@ -25,10 +27,16 @@ public class ParkingSession {
         LocalDateTime end = (exitTime != null) ? exitTime : LocalDateTime.now();
         return Duration.between(entryTime, end).toMinutes();
     }
-    public User getUser() { return user; }
-    public ParkingSpot getSpot() { return spot; }
     
- @Override
+    public LocalDateTime getStartTime() {
+        return entryTime;
+    }
+    
+    public LocalDateTime getEndTime() {
+        return exitTime;
+    }
+    
+    @Override
     public String toString() {
         return
                 "model.factory.VehicleFactory.Vehicle=" + user.getVehicle().getNumberPlate() +

@@ -14,6 +14,6 @@ A Low Level Design implementation of a Chess Game engine demonstrating various d
 
 | Pattern | Package | Description |
 |---------|---------|-------------|
-| **Strategy** | `strategy` | Different move strategies for each piece type |
+| **Strategy** | `strategy` | Different move strategies for each piece type, Player strategies (HumanPlayerStrategy, ComputerPlayerStrategy) |
 | **State** | `state` | Game state management (Active, Check, Checkmate, Stalemate) |
 | **Factory** | `strategy` | Piece creation via PieceFactory |

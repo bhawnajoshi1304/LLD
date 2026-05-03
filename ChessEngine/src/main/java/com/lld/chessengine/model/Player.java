@@ -1,22 +1,15 @@
 package com.lld.chessengine.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class Player {
     private String name;
     private Color color;
-    public Player(String name) {this.name = name;}
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Player(String name, Color color) {
         this.name = name;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
         this.color = color;
     }
 }

@@ -17,3 +17,4 @@ A Low Level Design implementation of an Elevator Control System demonstrating va
 | **State** | `state` | Elevator operational states (Idle, MovingUp, MovingDown, Stopped, Maintenance) |
 | **Strategy** | `strategy` | Different scheduling algorithms (FCFS, LOOK, SCAN) |
 | **Observer** | `observer` | Display and logging observers |
+| **Mediator** | `mediator` | Button, HallPanel, and ElevatorPanel coordination |

@@ -13,7 +13,7 @@ public class ElevatorLogger implements ElevatorObserver, AutoCloseable {
     public ElevatorLogger(int elevatorId, String buildingName) {
 
         try {
-            String logDir = "logs/" + buildingName;
+            String logDir = "../../logs/Elevator";
             java.io.File dir = new java.io.File(logDir);
             if (!dir.exists()) {
                 dir.mkdirs();

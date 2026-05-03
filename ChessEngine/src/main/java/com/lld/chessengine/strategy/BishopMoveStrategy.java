@@ -9,10 +9,11 @@ public class BishopMoveStrategy implements MoveStrategy{
     private BishopMoveStrategy(){}
 
     private static final int[][] DIRECTIONS = {
-            {1, 1}, {-1, 1}, {1, 1}, {1, -1}
+            {1, 1}, {-1, 1}, {1, -1}, {-1, -1}
     };
     @Override
     public List<Position> possibleMoves(Position fromPosition, Board board) {
-        return MoveUtils.rayMoves(fromPosition, DIRECTIONS);
+        Piece piece = board.getPiece(fromPosition);
+        return MoveUtils.rayMoves(fromPosition, DIRECTIONS, board, piece.getColor());
     }
 }

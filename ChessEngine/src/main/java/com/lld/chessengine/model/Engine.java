@@ -1,46 +1,76 @@
 package com.lld.chessengine.model;
 
-import com.lld.chessengine.strategy.Position;
-import com.lld.chessengine.strategy.PositionRegistry;
-
-import java.util.Scanner;
-
-import static java.lang.Integer.parseInt;
+import com.lld.chessengine.strategy.Move;
+import com.lld.chessengine.strategy.PlayerStrategy;
+import com.lld.chessengine.state.*;
 
 public class Engine {
     Board board;
     Player whitePlayer, blackPlayer, currentPlayer;
     Status gameStatus = Status.ACTIVE;
+    PlayerStrategy whiteStrategy, blackStrategy;
+    GameState currentState;
 
-    public void startGame(String name1, String name2) throws RuntimeException {
-        whitePlayer = new Player(name1);
-        blackPlayer = new Player(name2);
+    public void startGame(String name1, String name2, PlayerStrategy strategy1, PlayerStrategy strategy2) throws RuntimeException {
+        whitePlayer = new Player(name1, Color.WHITE);
+        blackPlayer = new Player(name2, Color.BLACK);
+        whiteStrategy = strategy1;
+        blackStrategy = strategy2;
         currentPlayer = whitePlayer;
         board = new Board();
         board.initializeBoard();
         board.printBoard();
+        currentState = new ActiveState();
+        currentState.onEnter(this);
         play();
     }
 
     public void play() {
-        Scanner scanner = new Scanner(System.in);
+        while (!currentState.isGameOver()) {
+            PlayerStrategy currentStrategy = (currentPlayer == whitePlayer) ? whiteStrategy : blackStrategy;
+            Move move = currentStrategy.getMove(board);
 
-        while (gameStatus == Status.ACTIVE) {
-            System.out.println(currentPlayer.getName() + "'s move (e.g., E2 E4): ");
-            String fromStr = scanner.next();
-            String toStr = scanner.next();
+            if (move == null) {
+                System.out.println("No valid moves available. Game over.");
+                break;
+            }
 
-            Position from = PositionRegistry.get(fromStr.charAt(0),parseInt(""+fromStr.charAt(1)));
-            Position to = PositionRegistry.get(toStr.charAt(0),parseInt("" + toStr.charAt(1)));
-
-            if (board.movePiece(from, to)) {
+            if (board.movePiece(move.getFrom(), move.getTo(), currentPlayer.getColor())) {
                 board.printBoard();
-                togglePlayer();
+                checkGameState();
+                if (!currentState.isGameOver()) {
+                    togglePlayer();
+                }
             } else {
                 System.out.println("Invalid move. Try again.");
             }
         }
-        scanner.close();
+    }
+
+    private void checkGameState() {
+        Color opponentColor = (currentPlayer.getColor() == Color.WHITE) ? Color.BLACK : Color.WHITE;
+
+        if (board.isInsufficientMaterial()) {
+            System.out.println("Insufficient material! Game is a draw.");
+            transitionToState(new StalemateState());
+        } else if (board.isCheckmate(opponentColor)) {
+            Color winner = currentPlayer.getColor();
+            transitionToState(new CheckmateState(winner));
+        } else if (board.isStalemate(opponentColor)) {
+            transitionToState(new StalemateState());
+        } else if (board.isKingInCheck(opponentColor)) {
+            transitionToState(new CheckState(opponentColor));
+        } else {
+            transitionToState(new ActiveState());
+        }
+    }
+
+    private void transitionToState(GameState newState) {
+        if (currentState != null) {
+            currentState.onExit(this);
+        }
+        currentState = newState;
+        currentState.onEnter(this);
     }
 
     private void togglePlayer() {

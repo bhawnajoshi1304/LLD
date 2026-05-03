@@ -3,9 +3,7 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-
-package "com.lld.tictactoe.model" {
-    class Board {
+class Board {
         - {static} Character EMPTY
         - int size
         - Character[][] grid
@@ -57,10 +55,8 @@ package "com.lld.tictactoe.model" {
     GameState <|-- InProgressState
     GameState <|-- WonState
     GameState <|-- DrawState
-}
 
-package "com.lld.tictactoe.observer" {
-    class GameContext {
+class GameContext {
         - GameState currentState
         + <<Create>> GameContext(Player)
         + void setCurrentState(GameState)
@@ -82,10 +78,8 @@ package "com.lld.tictactoe.observer" {
     }
 
     GameEventListener <|.. FileLoggerListener
-}
 
-package "com.lld.tictactoe.strategy" {
-    interface PlayerStrategy {
+interface PlayerStrategy {
         ~ Position makeMove(Board)
     }
 
@@ -96,17 +90,21 @@ package "com.lld.tictactoe.strategy" {
         + Position makeMove(Board)
     }
 
-    PlayerStrategy <|.. HumanPlayerStrategy
-}
+    class ComputerPlayerStrategy {
+        - String playerName
+        - Random random
+        + <<Create>> ComputerPlayerStrategy(String)
+        + Position makeMove(Board)
+    }
 
-package "com.lld.tictactoe.factory" {
-    class PlayerFactory {
+    PlayerStrategy <|.. HumanPlayerStrategy
+    PlayerStrategy <|.. ComputerPlayerStrategy
+
+class PlayerFactory {
         + {static} Player createPlayer(Character,PlayerStrategy)
     }
-}
 
-package "com.lld.tictactoe.game" {
-    interface BoardGame {
+interface BoardGame {
         ~ void play()
         ~ void switchPlayer()
         ~ void announceResult()
@@ -129,31 +127,28 @@ package "com.lld.tictactoe.game" {
     }
 
     BoardGame <|.. TicTacToeGame
-}
 
-package "com.lld.tictactoe.demo" {
-    class TicTacDemoApplication {
+class TicTacDemoApplication {
         - {static} Scanner scanner
         - {static} boolean getChoice(String)
         - {static} char getSymbol(String)
         + {static} void main(String[])
     }
-}
 
 ' ========= CROSS-PACKAGE RELATIONSHIPS =========
-com.lld.tictactoe.game.TicTacToeGame *-- com.lld.tictactoe.model.Board
-com.lld.tictactoe.game.TicTacToeGame *-- com.lld.tictactoe.observer.GameContext
-com.lld.tictactoe.game.TicTacToeGame *-- com.lld.tictactoe.model.Player
-com.lld.tictactoe.game.TicTacToeGame --> com.lld.tictactoe.observer.GameEventListener
+TicTacToeGame *-- Board
+TicTacToeGame *-- GameContext
+TicTacToeGame *-- Player
+TicTacToeGame --> GameEventListener
 
-com.lld.tictactoe.observer.GameContext --> com.lld.tictactoe.model.GameState
-com.lld.tictactoe.model.GameState --> com.lld.tictactoe.model.Player
-com.lld.tictactoe.model.Player --> com.lld.tictactoe.strategy.PlayerStrategy
-com.lld.tictactoe.model.Board --> com.lld.tictactoe.model.Position
-com.lld.tictactoe.model.Board --> com.lld.tictactoe.observer.GameContext
+GameContext --> GameState
+GameState --> Player
+Player --> PlayerStrategy
+Board --> Position
+Board --> GameContext
 
-com.lld.tictactoe.factory.PlayerFactory ..> com.lld.tictactoe.model.Player
-com.lld.tictactoe.factory.PlayerFactory ..> com.lld.tictactoe.strategy.PlayerStrategy
+PlayerFactory ..> Player
+PlayerFactory ..> PlayerStrategy
 
 @enduml
 ' Trigger workflow update

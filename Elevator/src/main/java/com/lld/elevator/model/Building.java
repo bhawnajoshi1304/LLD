@@ -78,4 +78,13 @@ public class Building {
     public List<Elevator> getElevators() {
         return elevatorController.getElevators();
     }
+    
+    public boolean hasPendingRequests() {
+        return elevatorController.getPendingRequestCount() > 0 || 
+               elevatorController.getElevators().stream().anyMatch(Elevator::hasPendingRequests);
+    }
+    
+    public boolean areAllElevatorsIdle() {
+        return elevatorController.areAllElevatorsIdle() && !hasPendingRequests();
+    }
 }

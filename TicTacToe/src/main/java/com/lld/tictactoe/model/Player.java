@@ -1,7 +1,9 @@
 package com.lld.tictactoe.model;
 
 import com.lld.tictactoe.strategy.PlayerStrategy;
+import lombok.Getter;
 
+@Getter
 public class Player{
     private final Character symbol;
     private final PlayerStrategy playerStrategy;
@@ -9,8 +11,4 @@ public class Player{
         this.symbol = symbol;
         this.playerStrategy = playerStrategy;
     }
-    public Character getSymbol() {
-        return symbol;
-    }
-    public PlayerStrategy getPlayerStrategy() { return playerStrategy;}
 }

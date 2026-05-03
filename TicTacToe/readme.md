@@ -4,7 +4,7 @@ A Low Level Design implementation of a TicTacToe game demonstrating various desi
 
 ## UML Diagram
 
-[![Class Diagram](https://tinyurl.com/2yohgkv6)](https://tinyurl.com/2yohgkv6)<!--![Class Diagram](./UMLDiagram.puml)-->
+[![Class Diagram](https://tinyurl.com/2yohgkv6)](https://tinyurl.com/2yohgkv6)<!--![Class Diagram](./UMLClass.puml)-->
 
 ## Sequence Diagram
 
@@ -15,6 +15,6 @@ A Low Level Design implementation of a TicTacToe game demonstrating various desi
 | Pattern | Package | Description |
 |---------|---------|-------------|
 | **State** | `model` | Game state management (Won, Draw, InProgress) |
-| **Strategy** | `strategy` | Player strategies (HumanPlayerStrategy) |
+| **Strategy** | `strategy` | Player strategies (HumanPlayerStrategy, ComputerPlayerStrategy) |
 | **Observer** | `observer` | Game event listeners (FileLoggerListener) |
 | **Factory** | `factory` | Player creation |

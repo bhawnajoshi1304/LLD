@@ -3,12 +3,7 @@ skinparam packageStyle rectangle
 skinparam linetype ortho
 skinparam classAttributeIconSize 0
 
-
-' =======================================================
-' ENUMS PACKAGE
-' =======================================================
-package "enums" {
-    enum ParkingSpotType {
+enum ParkingSpotType {
         SMALL
         BIG
         LARGE
@@ -19,14 +14,8 @@ package "enums" {
         CAR
         TRUCK
     }
-}
 
-' =======================================================
-' STRATEGY PACKAGE
-' =======================================================
-package "strategy" {
-
-    interface AllocationStrategy{
+interface AllocationStrategy{
         + supportsPark(vehicleType: VehicleType, spotType: ParkingSpotType): boolean
         + getPreferredSpotOrder(vehicleType: VehicleType): List<ParkingSpotType>
     }
@@ -44,8 +33,37 @@ package "strategy" {
         + getPreferredSpotOrder(vehicleType: VehicleType): List<ParkingSpotType>
     }
 
+    class ThreadSafeParkingStrategy <<Strategy>> {
+        - vehicleToSpotMapping: Map<VehicleType, List<ParkingSpotType>>
+        - spotAllocationCounts: Map<String, AtomicInteger>
+        - strategyLock: ReadWriteLock
+        + supportsPark(vehicleType: VehicleType, spotType: ParkingSpotType): boolean
+        + getPreferredSpotOrder(vehicleType: VehicleType): List<ParkingSpotType>
+        + recordSpotAllocation(spotType: ParkingSpotType): void
+        + getAllocationStatistics(): Map<String, Integer>
+        + updateVehicleMapping(vehicleType: VehicleType, spotTypes: List<ParkingSpotType>): void
+        + findOptimalSpot(floors: List<ParkingFloor>, vehicleType: VehicleType): ParkingSpot
+        + resetStatistics(): void
+    }
+
     class BasicFeeStrategy <<Strategy>> {
         + calculateFee(type: ParkingSpotType, duration: long): double
+    }
+
+    class ThreadSafePaymentStrategy <<Strategy>> {
+        - hourlyRates: Map<ParkingSpotType, Double>
+        - transactionHistory: Map<String, PaymentTransaction>
+        - rateLock: ReadWriteLock
+        - transactionCounter: AtomicInteger
+        - totalRevenue: AtomicLong
+        + calculateFee(type: ParkingSpotType, durationMinutes: long): double
+        + calculateSessionFee(session: ParkingSession): double
+        + updateHourlyRate(spotType: ParkingSpotType, newRate: double): void
+        + getCurrentRates(): Map<ParkingSpotType, Double>
+        + getTransactionHistory(): Map<String, PaymentTransaction>
+        + getTotalRevenue(): double
+        + getRevenueBySpotType(): Map<ParkingSpotType, Double>
+        + getTransactionStatistics(): TransactionStatistics
     }
 
     class CardPayment <<Strategy>> {
@@ -61,18 +79,14 @@ package "strategy" {
     }
 
     AllocationStrategy <|.. FlexibleAllocationStrategy
+    AllocationStrategy <|.. ThreadSafeParkingStrategy
     FeeStrategy <|.. BasicFeeStrategy
+    FeeStrategy <|.. ThreadSafePaymentStrategy
     PaymentStrategy <|.. CardPayment
     PaymentStrategy <|.. CashPayment
     PaymentStrategy <|.. UPIPayment
-}
 
-' =======================================================
-' OBSERVER PACKAGE
-' =======================================================
-package "observer" {
-
-    interface ParkingObserver{
+interface ParkingObserver{
         + onVehicleEntry(session: ParkingSession): void
         + onVehicleExit(session: ParkingSession): void
     }
@@ -100,14 +114,8 @@ package "observer" {
     ParkingObserver <|.. DisplayBoard
     ParkingObserver <|.. LoggingSystem
     ParkingObserver <|.. UserPaymentSystem
-}
 
-' =======================================================
-' STATE PACKAGE
-' =======================================================
-package "state" {
-
-    interface ParkingSpotState{
+interface ParkingSpotState{
         + canParkVehicle(spot: ParkingSpot, vehicle: Vehicle, strategy: AllocationStrategy): boolean
         + parkVehicle(spot: ParkingSpot, vehicle: Vehicle): void
         + exitVehicle(spot: ParkingSpot): void
@@ -138,14 +146,8 @@ package "state" {
     ParkingSpotState <|.. AvailableState
     ParkingSpotState <|.. OccupiedState
     ParkingSpotState <|.. OutOfServiceState
-}
 
-' =======================================================
-' MODEL.FACTORY PACKAGE
-' =======================================================
-package "model.factory" {
-
-    class ParkingSpot {
+class ParkingSpot {
          - spotNumber: String
          - vehicle: Vehicle
          - spotType: ParkingSpotType
@@ -164,7 +166,7 @@ package "model.factory" {
          + setOccupiedAt(occupiedAt: LocalDateTime): void
      }
 
-    class Vehicle <<immutable>> {
+class Vehicle <<immutable>> {
         - numberPlate: String
         - type: VehicleType
         ~ Vehicle(numberPlate: String, type: VehicleType)
@@ -172,7 +174,7 @@ package "model.factory" {
         + getNumberPlate(): String
     }
 
-    class ParkingLotManager {
+class ParkingLotManager {
         - exitObservers: List<ParkingObserver>
         - entryObservers: List<ParkingObserver>
         + ParkingLotManager()
@@ -182,29 +184,23 @@ package "model.factory" {
         + notifyEntry(parkingSession: ParkingSession): void
     }
 
-    class ParkingSpotFactory <<Factory>> {
+class ParkingSpotFactory <<Factory>> {
         + create(spotId: String, type: ParkingSpotType): ParkingSpot {static}
     }
 
-    class VehicleFactory <<Factory>> {
+class VehicleFactory <<Factory>> {
         + create(type: VehicleType, licenceNumber: String): Vehicle {static}
     }
 
-    class ParkingLotManagerFactory <<Factory>> {
+class ParkingLotManagerFactory <<Factory>> {
         + create(feeStrategy: FeeStrategy): ParkingLotManager {static}
     }
 
     ParkingSpotFactory ..> ParkingSpot
     VehicleFactory ..> Vehicle
     ParkingLotManagerFactory ..> ParkingLotManager
-}
 
-' =======================================================
-' MODEL PACKAGE
-' =======================================================
-package "model" {
-
-    class ParkingFloor {
+class ParkingFloor {
         - floorMap: Map<ParkingSpotType, List<ParkingSpot>>
         - floorNumber: int
         + ParkingFloor(floorConfig: Map<ParkingSpotType, Integer>, floor: int)
@@ -214,7 +210,7 @@ package "model" {
         + getFloorNumber(): int
     }
 
-    class ParkingSession {
+class ParkingSession {
         - user: User
         - spot: ParkingSpot
         - entryTime: LocalDateTime
@@ -227,7 +223,7 @@ package "model" {
         + toString(): String
     }
 
- class ParkingLot <<Singleton>> {
+class ParkingLot <<Singleton>> {
      - floors: List<ParkingFloor>
      - activeSessions: Map<String, ParkingSession>
      - lock: Lock
@@ -242,41 +238,37 @@ package "model" {
      + exit(user: User): void
  }
 
-    class User {
+class User {
         - vehicle: Vehicle
         - paymentStrategy: PaymentStrategy
         + User(type: VehicleType, vehicleNumber: String, paymentStrategy: PaymentStrategy)
         + pay(amount: double): void
         + getVehicle(): Vehicle
     }
-}
 
-' =======================================================
 ' RELATIONSHIPS
-' =======================================================
+ParkingFloor *-- ParkingSpot
+ParkingFloor ..> ParkingSpotFactory
 
-model.ParkingFloor *-- model.factory.ParkingSpot
-model.ParkingFloor ..> model.factory.ParkingSpotFactory
+ParkingLot *-- ParkingFloor
+ParkingLot --> ParkingSession
+ParkingLot --> ParkingSpot
+ParkingLot --> ParkingLotManager
+ParkingLot o-- AllocationStrategy
+ParkingLot ..> FeeStrategy
 
-model.ParkingLot *-- model.ParkingFloor
-model.ParkingLot --> model.ParkingSession
-model.ParkingLot --> model.factory.ParkingSpot
-model.ParkingLot --> model.factory.ParkingLotManager
-model.ParkingLot o-- strategy.AllocationStrategy
-model.ParkingLot ..> strategy.FeeStrategy
+User *-- Vehicle
+User --> PaymentStrategy
 
-model.User *-- model.factory.Vehicle
-model.User --> strategy.PaymentStrategy
+ParkingSession --> User
+ParkingSession --> ParkingSpot
 
-model.ParkingSession --> model.User
-model.ParkingSession --> model.factory.ParkingSpot
+ParkingObserver --> ParkingSession
+ParkingLotManager --> ParkingObserver
 
-observer.ParkingObserver --> model.ParkingSession
-model.factory.ParkingLotManager --> observer.ParkingObserver
+UserPaymentSystem --> FeeStrategy
 
-observer.UserPaymentSystem --> strategy.FeeStrategy
-
-model.factory.ParkingSpot o-- state.ParkingSpotState
-state.ParkingSpotState --> model.factory.ParkingSpot
+ParkingSpot o-- ParkingSpotState
+ParkingSpotState --> ParkingSpot
 
 @enduml' Trigger workflow update

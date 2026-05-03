@@ -2,7 +2,11 @@ package com.lld.chessengine.model;
 
 import com.lld.chessengine.strategy.Piece;
 import com.lld.chessengine.strategy.Position;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class Cell {
     private Position position;
     private Piece piece;
@@ -17,19 +21,5 @@ public class Cell {
     }
     public void removePiece() {
         this.piece = null;
-    }
-    public Position getPosition() {
-        return position;
-    }
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public void setPiece(Piece piece) {
-        this.piece = piece;
-    }
-
-    public Piece getPiece() {
-        return this.piece;
     }
 }

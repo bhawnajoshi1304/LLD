@@ -1,12 +1,11 @@
 package com.lld.tictactoe.model;
 
 import com.lld.tictactoe.observer.GameContext;
-import com.lld.tictactoe.model.GameState;
-import com.lld.tictactoe.model.WonState;
-import com.lld.tictactoe.model.DrawState;
+import lombok.Getter;
 
 import java.util.Objects;
 
+@Getter
 public class Board{
     private static final Character EMPTY = ' ';
     private final int size;
@@ -20,9 +19,6 @@ public class Board{
             }
         }
     }
-    public int getSize(){
-        return size;
-    }
     public boolean isValidMove(Position pos) {
         return pos.row >= 0 && pos.row < size && pos.col >= 0 && pos.col < size
                 && Objects.equals(grid[pos.row][pos.col], EMPTY);
@@ -32,18 +28,13 @@ public class Board{
     }
     public boolean hasGameStateChanged(GameContext context) {
         boolean hasEmptyCell = false;
-
-        // Check rows and track empty cells
         for (int i = 0; i < size; i++) {
             Character[] row = grid[i];
             if (!Objects.equals(row[0], EMPTY) && isWinningLine(row)) {
                 context.setCurrentState(new WonState(context.getCurrentState().getPlayer()));
                 return true;
-            }else{
-                System.out.println(i+" row not");
             }
 
-            // Check for any empty cells in the row
             for (int j = 0; j < size; j++) {
                 if (Objects.equals(grid[i][j], EMPTY)) {
                     hasEmptyCell = true;
@@ -51,7 +42,6 @@ public class Board{
             }
         }
 
-        // Check columns
         for (int j = 0; j < size; j++) {
             Character first = grid[0][j];
             if (Objects.equals(first, EMPTY)) continue;
@@ -59,7 +49,6 @@ public class Board{
             boolean win = true;
             for (int i = 1; i < size; i++) {
                 if (!Objects.equals(grid[i][j], first)) {
-                    System.out.println(j+" column not ");
                     win = false;
                     break;
                 }
@@ -71,7 +60,6 @@ public class Board{
             }
         }
 
-        // Check diagonals
         Character[] diag1 = new Character[size];
         Character[] diag2 = new Character[size];
 
@@ -83,18 +71,13 @@ public class Board{
         if (!Objects.equals(diag1[0], EMPTY) && isWinningLine(diag1)) {
             context.setCurrentState(new WonState(context.getCurrentState().getPlayer()));
             return true;
-        }else{
-            System.out.println("diag1 not");
         }
 
         if (!Objects.equals(diag2[0], EMPTY) && isWinningLine(diag2)) {
             context.setCurrentState(new WonState(context.getCurrentState().getPlayer()));
             return true;
-        }else{
-            System.out.println("diag2 not");
         }
 
-        // No win, check for draw
         if (!hasEmptyCell) {
             context.setCurrentState(new DrawState());
             return true;

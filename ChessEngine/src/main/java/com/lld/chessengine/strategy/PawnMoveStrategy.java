@@ -15,21 +15,18 @@ public class PawnMoveStrategy implements MoveStrategy{
         Piece pawn = board.getPiece(fromPosition);
         int direction = pawn.getColor().equals(Color.WHITE) ? 1 : -1;
 
-        // Forward move
         Position oneStep = fromPosition.offset(0, direction);
         if (oneStep != null && board.isEmpty(oneStep)) {
             moves.add(oneStep);
 
-            // Two-step on first move
             if (!pawn.getHasMoved()) {
                 Position twoStep = fromPosition.offset(0, direction * 2);
-                if (board.isEmpty(twoStep)) {
+                if (twoStep != null && board.isEmpty(twoStep)) {
                     moves.add(twoStep);
                 }
             }
         }
 
-        // Diagonal captures
         for (int dx : new int[]{-1, 1}) {
             Position diag = fromPosition.offset(dx, direction);
             if (diag != null) {
@@ -40,7 +37,6 @@ public class PawnMoveStrategy implements MoveStrategy{
             }
         }
 
-        // En Passant
         Position enPassantTarget = board.getEnPassantTarget();
         if (enPassantTarget != null && Math.abs(enPassantTarget.getColumn() - fromPosition.getColumn()) == 1 &&
                 enPassantTarget.getRow() == fromPosition.getRow() + direction) {

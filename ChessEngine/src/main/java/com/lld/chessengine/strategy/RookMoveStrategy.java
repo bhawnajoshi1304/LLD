@@ -1,6 +1,7 @@
 package com.lld.chessengine.strategy;
 
 import com.lld.chessengine.model.Board;
+import com.lld.chessengine.model.Color;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ public class RookMoveStrategy implements MoveStrategy {
     };
     @Override
     public List<Position> possibleMoves(Position fromPosition, Board board) {
-        return MoveUtils.rayMoves(fromPosition, DIRECTIONS);
+        Piece piece = board.getPiece(fromPosition);
+        return MoveUtils.rayMoves(fromPosition, DIRECTIONS, board, piece.getColor());
     }
 }

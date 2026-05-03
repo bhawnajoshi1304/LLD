@@ -1,0 +1,16 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class Main {
+    - {static} Scanner scanner
+    - {static} Logger logger
+    + {static} main(String[]): void
+    - {static} setupLogging(): void
+    - {static} getChoice(String): boolean
+    - {static} runDemoMode(): void
+    - {static} runManualMode(): void
+}
+
+@enduml

@@ -25,13 +25,32 @@ bin/
 ### VS Code ###
 .vscode/
 .vscode/*
-.idea/
-.idea/*
+
+### IntelliJ IDEA ###
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/dictionaries
+.idea/shelf
+.idea/uiDesigner.xml
+.idea/gradle.xml
+.idea/libraries
+.idea/caches
+.idea/.name
+.idea/jarRepositories.xml
+.idea/encodings.xml
+.idea/runConfigurations/workspace.xml
 
 ### Mac OS ###
 .DS_Store
 
-logs/
-logs/*
+### Java/Gradle/Maven ###
+target/
+build/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+Elevator/logs/
+Elevator/logs/*
 ParkingLot/parkingLot.md
 ParkingLot/reveiw.md

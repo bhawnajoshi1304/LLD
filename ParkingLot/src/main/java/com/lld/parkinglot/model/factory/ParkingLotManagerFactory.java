@@ -9,7 +9,7 @@ public class ParkingLotManagerFactory {
     public static ParkingLotManager create(FeeStrategy feeStrategy) {
         ParkingLotManager parkingLotManager = new ParkingLotManager();
 
-        LoggingSystem loggingSystem = new LoggingSystem("lotTesting");
+        LoggingSystem loggingSystem = new LoggingSystem("../../logs/ParkingLot/parkinglot.log");
         UserPaymentSystem userPaymentSystem = new UserPaymentSystem(feeStrategy);
 
         DisplayBoard displayBoard = new DisplayBoard();
