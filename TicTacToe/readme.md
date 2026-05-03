@@ -4,7 +4,7 @@ A Low Level Design implementation of a TicTacToe game demonstrating various desi
 
 ## UML Diagram
 
-[![Class Diagram](https://tinyurl.com/2yohgkv6)](https://tinyurl.com/2yohgkv6)<!--![Class Diagram](./UMLClass.puml)-->
+[![Class Diagram](https://tinyurl.com/29bqkyhv)](https://tinyurl.com/29bqkyhv)<!--![Class Diagram](./UMLClass.puml)-->
 
 ## Sequence Diagram
 

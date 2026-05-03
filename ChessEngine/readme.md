@@ -4,7 +4,7 @@ A Low Level Design implementation of a Chess Game engine demonstrating various d
 
 ## UML Diagram
 
-[![Class Diagram](https://tinyurl.com/289jjdtz)](https://tinyurl.com/289jjdtz)<!--![Class Diagram](./UMLClass.puml)-->
+[![Class Diagram](https://tinyurl.com/2a2qrmp3)](https://tinyurl.com/2a2qrmp3)<!--![Class Diagram](./UMLClass.puml)-->
 
 ## Sequence Diagram
 

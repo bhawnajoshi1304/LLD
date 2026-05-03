@@ -4,7 +4,7 @@ A Low Level Design implementation of an Elevator Control System demonstrating va
 
 ## UML Diagram
 
-[![Class Diagram](https://tinyurl.com/28nhc2z3)](https://tinyurl.com/28nhc2z3)<!--![Class Diagram](./UMLClass.puml)-->
+[![Class Diagram](https://tinyurl.com/2872m5u9)](https://tinyurl.com/2872m5u9)<!--![Class Diagram](./UMLClass.puml)-->
 
 ## Sequence Diagram
 

@@ -4,11 +4,11 @@ An LLD implementation of an inventory management system with product tracking an
 
 ## UML Diagram
 
-<!--![Class Diagram](./UMLClass.puml)-->
+[![Class Diagram](https://tinyurl.com/2bvzx6ju)](https://tinyurl.com/2bvzx6ju)<!--![Class Diagram](./UMLClass.puml)-->
 
 ## Sequence Diagram
 
-<!--![Sequence Diagram](./Sequence.puml)-->
+[![Sequence Diagram](https://tinyurl.com/24fkb57l)](https://tinyurl.com/24fkb57l)<!--![Sequence Diagram](./Sequence.puml)-->
 
 ## Features
 
